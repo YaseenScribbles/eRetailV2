@@ -1,0 +1,19 @@
+.cvs {
+    .form {
+        &__group {
+            &:first-child {
+                flex: 0 0 25%;
+            }
+
+            &:nth-child(2) {
+                position: relative;
+            }
+        }
+    }
+
+    .form__group {
+        @media screen and (max-width: 37.5em) {
+            flex: 0 0 100% !important;
+        }
+    }
+}

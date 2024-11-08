@@ -1,0 +1,75 @@
+.sales {
+    // padding: 1rem 3rem;
+    // display: flex;
+    // flex-direction: column;
+    // gap: 2rem;
+    // position: relative;
+    // background-color: $color-white;
+    // min-height: calc(100vh - 6rem);
+
+    // &__title {
+    //     padding: 1rem;
+    //     font-size: 1.7rem;
+    //     flex: 0 0 100%;
+    //     border-bottom: $outline-thin;
+    // }
+
+    // &__form {
+    //     display: flex;
+    //     flex: 0 0 100%;
+    //     gap: 2rem;
+    //     flex-wrap: wrap;
+    // }
+
+    .form__group:nth-child(1),
+    .form__group:nth-child(2) {
+        flex: 0 0 25%;
+    }
+
+    // .select {
+    //     font-family: inherit;
+    //     font-size: 1.7rem;
+
+    //     > [class$="control"] {
+    //         padding: 0.5rem;
+    //     }
+
+    // }
+
+    .form__group:nth-child(3) {
+        position: relative;
+    }
+
+    // .form__group--date > .date-range {
+    //     opacity: 0;
+    //     visibility: hidden;
+    //     position: absolute;
+    //     top: 100%;
+    //     left: 0;
+    //     z-index: 3;
+    //     transform: translateY(-10%);
+    //     transition: all 0.2s;
+    // }
+
+    // .btn:hover + .date-range {
+
+    // }
+
+    // .date-range.show {
+    //     opacity: 1;
+    //     visibility: visible;
+    //     transform: translateY(5%);
+    //     border: $outline-thin;
+    // }
+
+    // .ag-grid {
+    //     flex-grow: 1;
+    // }
+
+    .form__group {
+        @media screen and (max-width: 37.5em) {
+            flex: 0 0 100% !important;
+        }
+    }
+
+}

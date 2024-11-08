@@ -1,0 +1,18 @@
+.invoice {
+    .form {
+        &__group:nth-child(1),
+        &__group:nth-child(2) {
+            width: 25%;
+        }
+
+        &__group:nth-child(3) {
+            position: relative;
+        }
+    }
+
+    .form__group {
+        @media screen and (max-width: 37.5em) {
+            flex: 0 0 100% !important;
+        }
+    }
+}

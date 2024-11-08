@@ -1,0 +1,114 @@
+.login {
+    height: 100vh;
+    width: 100vw;
+
+    background-image: linear-gradient(
+            to right bottom,
+            rgba($color-secondary, 0.2),
+            rgba($color-secondary, 0.2)
+        ),
+        url("../images/login-bg.jpg");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &__card {
+        background-color: rgba($color-secondary, 0.7);
+        height: 55vh;
+        width: 20vw;
+        padding: 5rem;
+        border-radius: 1rem;
+
+        @media screen and (max-width: 93.75em) {
+            height: 55vh;
+            width: 27vw;
+        }
+
+        @media screen and (max-width: 86em) {
+            height: 50vh;
+            width: 27vw;
+        }
+
+        @media screen and (max-width: 37.5em) {
+            width: 80%;
+            height: 65%;
+        }
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+    }
+
+    .app-logo {
+        height: 5rem;
+        width: 5rem;
+        fill: darken($color-primary, 10%);
+    }
+
+    .app-name {
+        font-family: "Agdasima", sans-serif;
+        font-weight: 400;
+        font-size: 3.5rem;
+        letter-spacing: 1px;
+        color: darken($color-primary, 10%);
+    }
+
+    &__form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        font-size: 1.5rem;
+        color: $color-white;
+        width: 100%;
+
+        .input {
+            display: block;
+            color: #333;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-family: inherit;
+            font-size: 1.5rem;
+            height: 5rem;
+            width: 100%;
+            box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.3);
+            transition: all 0.2s;
+            &:focus {
+                outline: $outline;
+            }
+        }
+
+        .label {
+            display: block;
+            transition: all 0.25s;
+            transform: translateY(-2.5rem);
+            opacity: 0;
+        }
+    }
+
+    .input:not(:placeholder-shown) + .label {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+// .form {
+//     &__group:last-of-type {
+//         margin-bottom: 2rem;
+//     }
+// }
+
+.error-msg {
+    color: darken($color-primary, 25%);
+    display: block;
+    text-align: center;
+    text-transform: uppercase;
+    margin-top: 2rem;
+    font-size: 1.5rem;
+    height: 2rem;
+}

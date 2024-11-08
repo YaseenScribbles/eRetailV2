@@ -21,6 +21,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'mobile',
+        'role',
+        'active',
+        'shops',
+        'has_invoice_report',
+        'buyer_id',
+        'sale_report'
     ];
 
     /**
@@ -42,4 +49,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    protected $table = 'web_users';
 }

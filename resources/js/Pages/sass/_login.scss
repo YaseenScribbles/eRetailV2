@@ -8,6 +8,8 @@
             rgba($color-secondary, 0.2)
         ),
         url("../images/login-bg.jpg");
+
+    // background-image: url("../images/login-bg.jpg");
     background-size: cover;
     background-position: center;
     display: flex;
@@ -26,8 +28,8 @@
             width: 27vw;
         }
 
-        @media screen and (max-width: 86em) {
-            height: 50vh;
+        @media screen and (max-width: 85.375em) {
+            height: 70vh;
             width: 27vw;
         }
 

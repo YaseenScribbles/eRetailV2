@@ -131,7 +131,7 @@
   z-index: 10;
   transition: all 0.2s;
 }
-@media screen and (max-width: 37.5em) {
+@media screen and (max-width: 85.375em) {
   .toast-container {
     top: 7%;
   }
@@ -445,7 +445,7 @@
   animation: loading 1.5s infinite ease-in-out;
   transform-origin: left;
 }
-@media screen and (max-width: 37.5em) {
+@media screen and (max-width: 85.375em) {
   .page__loader {
     right: 45%;
   }
@@ -598,9 +598,9 @@ body {
     width: 27vw;
   }
 }
-@media screen and (max-width: 86em) {
+@media screen and (max-width: 85.375em) {
   .login__card {
-    height: 50vh;
+    height: 70vh;
     width: 27vw;
   }
 }

@@ -13,8 +13,10 @@ const Login = (props) => {
     const login = (e) => {
         e.preventDefault();
         try {
-            localStorage.removeItem("eRetail_user")
-            post("/login", user);
+            if(JSON.parse(localStorage.getItem("eRetail_user"))){
+                localStorage.removeItem("eRetail_user")
+            }
+            post("/login");
         } catch (error) {
             console.log(error);
         }

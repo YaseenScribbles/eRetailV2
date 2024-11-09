@@ -2,7 +2,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev": "vite",
+        "dev": "vite --host=192.168.10.65",
         "build": "vite build",
         "watch:sass": "sass --watch resources/js/Pages/main.scss resources/css/app.css"
     },

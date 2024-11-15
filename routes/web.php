@@ -11,6 +11,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,4 +63,6 @@ Route::middleware('auth')->group(function () {
         where im.buyerid = b.buyerid and im.buyerid in ($buyers)");
         return response()->json(['buyers' => $buyersList]);
     });
+
+    Route::get('/stock-summary',[DashboardController::class,'stockSummaryReport']);
 });

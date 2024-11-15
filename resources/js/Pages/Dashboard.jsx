@@ -15,6 +15,8 @@ import {
 import { useForm } from "@inertiajs/react";
 import { format } from "date-fns";
 import MobileNav from "./components/MobileNav";
+import axios from "axios";
+// import { router } from "@inertiajs/react";
 
 const Dashboard = (props) => {
     const [showRange, setShowRange] = useState(false);
@@ -36,6 +38,7 @@ const Dashboard = (props) => {
         to_date: format(new Date(), "yyyy-MM-dd"),
     });
     const [showMobileNav, setShowMobileNav] = useState(false);
+    const [stockSummaryLoading, setStockSummaryLoading] = useState(true);
 
     useEffect(() => {
         if (props.shopwiseSales.length > 0) {
@@ -80,17 +83,17 @@ const Dashboard = (props) => {
             setTop10ReturnProducts([]);
         }
 
-        if (props.stockSummary.length > 0) {
-            const data = props.stockSummary.map((e) => ({
-                ...e,
-                cost: (+e.cost).toFixed(2),
-                mrp: (+e.mrp).toFixed(2),
-                stock: (+e.stock).toFixed(2),
-            }));
-            setStockSummary(data);
-        } else {
-            setStockSummary([]);
-        }
+        // if (props.stockSummary.length > 0) {
+        //     const data = props.stockSummary.map((e) => ({
+        //         ...e,
+        //         cost: (+e.cost).toFixed(2),
+        //         mrp: (+e.mrp).toFixed(2),
+        //         stock: (+e.stock).toFixed(2),
+        //     }));
+        //     setStockSummary(data);
+        // } else {
+        //     setStockSummary([]);
+        // }
 
         if (props.top10Category.length > 0) {
             const data = props.top10Category
@@ -124,6 +127,28 @@ const Dashboard = (props) => {
             to_date: format(duration[0].endDate, "yyyy-MM-dd"),
         }));
     }, [duration]);
+
+    useEffect(() => {
+        axios
+            .get("/stock-summary", {
+                headers: {
+                    Accept: "application/json",
+                },
+            })
+            .then(({ data }) => {
+                if (data) {
+                    const stockSummary = data.stockSummary.map((e) => ({
+                        ...e,
+                        cost: (+e.cost).toFixed(2),
+                        mrp: (+e.mrp).toFixed(2),
+                        stock: (+e.stock).toFixed(2),
+                    }));
+                    setStockSummary(stockSummary);
+                    setStockSummaryLoading(false);
+                }
+            })
+            .catch((error) => console.log(error));
+    }, []);
 
     return (
         <>
@@ -306,7 +331,12 @@ const Dashboard = (props) => {
                         </ResponsiveContainer>
                     </div>
                 )}
-                {stockSummary.length > 0 && (
+
+                {stockSummaryLoading ? (
+                    <div className="cell stock">
+                    <p>Stock summary loading<span>.</span><span>.</span><span>.</span></p>
+                    </div>
+                ) : (
                     <div className="cell cell-6">
                         <table className="dashboard-table dashboard-table--6">
                             <CaptionHeadBody

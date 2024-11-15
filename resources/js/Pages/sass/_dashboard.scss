@@ -78,6 +78,45 @@
         //     flex-direction: column;
         // }
 
+        &.stock {
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            @keyframes blink {
+                0%, 100% {
+                    opacity: 0;
+                }
+                50% {
+                    opacity: 1;
+                }
+            }
+
+
+
+            p {
+                display: block;
+                font-size: 1.6rem;
+                color: $color-primary;
+                text-transform: uppercase;
+                // animation: moveLeftAndRight 1s ease-out infinite;
+
+                & span {
+                    animation: blink 1.5s infinite;
+                }
+
+                & span:nth-child(2) {
+                    animation-delay: 0.3s;
+                }
+
+                & span:nth-child(3) {
+                    animation-delay: 0.6s;
+                }
+
+            }
+        }
+
         &.chart {
             display: flex;
             flex-direction: column;

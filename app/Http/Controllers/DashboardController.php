@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class DashboardController extends Controller
 {
@@ -59,11 +60,11 @@ class DashboardController extends Controller
 
         $top10ReturnProducts = DB::select($top10ReturnProductsSql);
 
-        $stockSummarySql = "SELECT shop, cost, mrp, stock
-        FROM v_stocksummary
-        WHERE shopid in ($shop_id)";
+        // $stockSummarySql = "SELECT shop, cost, mrp, stock
+        // FROM v_stocksummary
+        // WHERE shopid in ($shop_id)";
 
-        $stockSummary = DB::select($stockSummarySql);
+        // $stockSummary = DB::select($stockSummarySql);
 
         $top10CategorySql = "SELECT TOP 10 A.Category category,SUM(BD.Qty) qty
         FROM BillDetails BD
@@ -81,7 +82,7 @@ class DashboardController extends Controller
             'settlement' => $settlement,
             'top10Products' => $top10Products,
             'top10ReturnProducts' => $top10ReturnProducts,
-            'stockSummary' => $stockSummary,
+            // 'stockSummary' => $stockSummary,
             'top10Category' => $top10Category,
             'user' => auth()->user()
         ];
@@ -96,11 +97,16 @@ class DashboardController extends Controller
         return Inertia::render('Dashboard', $this->getDashboardData($from_date, $to_date, $shop_id));
     }
 
-    public function report(Request $request)
+    public function stockSummaryReport()
     {
-        $shop_id = $request->shop_id == 0 ? auth()->user()->shops : $request->shop_id;
-        $from_date = $request->from_date;
-        $to_date = $request->to_date;
-        return Inertia::render('Dashboard', $this->getDashboardData($from_date, $to_date, $shop_id));
+        $shop_id = auth()->user()->shops;
+        $stockSummarySql = "SELECT shop, cost, mrp, stock
+        FROM v_stocksummary
+        WHERE shopid in ($shop_id)";
+
+        $stockSummary = DB::select($stockSummarySql);
+
+        return response()->json(['stockSummary' => $stockSummary]);
+        // return Response($stockSummary);
     }
 }

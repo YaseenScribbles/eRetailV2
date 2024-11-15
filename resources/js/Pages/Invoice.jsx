@@ -274,7 +274,7 @@ const Invoice = (props) => {
     useEffect(() => {
         axios.defaults.withCredentials = true;
         axios
-            .get(`http://127.0.0.1:8000/buyers?f_year=${data.f_year || "2425"}`)
+            .get(`/buyers?f_year=${data.f_year || "2425"}`)
             .then(({ data }) => {
                 if (data) {
                     const buyerOptions = data.buyers.map((buyer) => ({

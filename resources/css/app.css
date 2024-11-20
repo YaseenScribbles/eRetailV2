@@ -642,7 +642,7 @@ body {
 @media screen and (max-width: 28em) {
   .login__card {
     width: 80%;
-    height: 55%;
+    height: 60%;
   }
 }
 .login .app-logo {

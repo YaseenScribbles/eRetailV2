@@ -209,6 +209,11 @@
     position: relative;
     background-color: $color-white;
     min-height: 100vh;
+
+    @media screen and (max-width: 28em) {
+        min-height: 100dvh;
+    }
+
     &__title {
         margin-top: 6rem;
         padding: 1rem;
@@ -560,7 +565,7 @@
 }
 
 .mobile-nav {
-    height: 100vh;
+    height: 100dvh;
     width: 100%;
     position: fixed;
     display: flex;

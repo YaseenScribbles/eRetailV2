@@ -186,6 +186,11 @@
   background-color: #F2F5F2;
   min-height: 100vh;
 }
+@media screen and (max-width: 28em) {
+  .page {
+    min-height: 100dvh;
+  }
+}
 .page__title {
   margin-top: 6rem;
   padding: 1rem;
@@ -457,7 +462,7 @@
 }
 
 .mobile-nav {
-  height: 100vh;
+  height: 100dvh;
   width: 100%;
   position: fixed;
   display: flex;
@@ -585,6 +590,13 @@ body {
   justify-content: center;
   align-items: center;
 }
+@media screen and (max-width: 28em) {
+  .login {
+    max-height: 100dvh;
+    max-width: 100dvw;
+    overflow: hidden;
+  }
+}
 .login__card {
   background-color: rgba(170, 192, 170, 0.7);
   height: 55vh;
@@ -625,6 +637,12 @@ body {
   .login__card {
     width: 70%;
     height: 60%;
+  }
+}
+@media screen and (max-width: 28em) {
+  .login__card {
+    width: 80%;
+    height: 55%;
   }
 }
 .login .app-logo {

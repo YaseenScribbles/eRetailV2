@@ -128,7 +128,7 @@
   flex-direction: column;
   align-content: center;
   gap: 2rem;
-  z-index: 10;
+  z-index: 101;
   transition: all 0.2s;
 }
 @media screen and (max-width: 85.375em) {
@@ -642,7 +642,7 @@ body {
 @media screen and (max-width: 28em) {
   .login__card {
     width: 80%;
-    height: 60%;
+    height: 65%;
   }
 }
 .login .app-logo {

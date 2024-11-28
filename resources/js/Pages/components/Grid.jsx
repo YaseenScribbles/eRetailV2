@@ -12,8 +12,45 @@ const Grid = ({
     excludeSortingColumns = [],
 }) => {
     const handleExport = (data, reportName) => {
+        // Format headers
+        const transformHeader = (key) => {
+            return key
+                .replace(/_/g, " ") // Replace underscores with spaces
+                .replace(/\b\w/g, (char) => char.toUpperCase()); // Capitalize each word
+        };
+
+        const isDateField = (header) => header.toLowerCase().endsWith("date");
+
+        const isStringField = (header) => header.toLowerCase().endsWith("code");
+
+        // Process data: convert numbers, format dates
+        const processedData = data.map((row) => {
+            const newRow = {};
+            Object.keys(row).forEach((key) => {
+                let value = row[key];
+
+                // Format date fields based on header
+                if (
+                    isDateField(key) &&
+                    typeof value === "string" &&
+                    !isNaN(Date.parse(value))
+                ) {
+                    const date = new Date(value);
+                    value = date.toLocaleDateString();
+                }
+
+                // Convert numeric strings to numbers
+                if (!isNaN(value) && value !== "" && !isStringField(key)) {
+                    value = parseFloat(value);
+                }
+
+                newRow[transformHeader(key)] = value; // Apply header transformation
+            });
+            return newRow;
+        });
+
         // Convert the data into a worksheet and workbook
-        const worksheet = XLSX.utils.json_to_sheet(data);
+        const worksheet = XLSX.utils.json_to_sheet(processedData);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
 

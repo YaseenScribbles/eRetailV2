@@ -1,0 +1,201 @@
+.p-s-g {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(35rem, 50rem));
+    grid-template-rows: min-content min-content min-content min-content;
+    gap: 2rem;
+    justify-content: center;
+    min-height: 100dvh;
+    width: 100%;
+    padding: 1rem 2rem;
+    background-color: $color-white;
+
+    .title {
+        margin-top: 6rem;
+        grid-column: 1 / -1;
+        height: 6rem;
+        padding: 1rem;
+        border-bottom: $outline-thin;
+
+        h3 {
+            font-size: 2rem;
+        }
+    }
+
+    &__form {
+        grid-column: 1 / -1;
+        display: flex;
+        width: 100%;
+        padding: 0.5rem 0;
+        position: relative;
+
+        .input {
+            border: 3px solid transparent;
+            outline: 3px solid transparent;
+            flex: 0 0 15%;
+            height: 100%;
+            min-height: 46px;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-family: inherit;
+            font-size: 1.5rem;
+            transition: all 0.2s;
+
+            @media screen and (max-width: 37.5em) {
+                min-height: 4rem;
+                padding: 0.5rem;
+            }
+
+            &:focus {
+                outline: $outline;
+            }
+        }
+
+        .label {
+            transition: all 0.25s;
+            transform: translateY(-2.5rem);
+            opacity: 0;
+            visibility: hidden;
+            position: absolute;
+            left: 1%;
+            color: $color-primary;
+        }
+
+        .input:not(:placeholder-shown) + .label {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .btn {
+            flex: 0 0 10%;
+            margin-left: 2rem;
+
+            @media screen and (max-width: 37.5em) {
+                margin-left: 1rem;
+            }
+
+            .search-icon {
+                height: 2rem;
+                width: 2rem;
+                fill: currentColor;
+            }
+        }
+    }
+
+    &__1,
+    &__2 {
+        // grid-column: span 2;
+        table {
+            font-size: 1.3rem;
+            background-color: #fff;
+            color: $color-primary;
+            width: 100%;
+            border-collapse: collapse;
+
+            caption {
+                font-size: 1.5rem;
+                font-weight: 500;
+                padding: 0.5rem;
+                text-transform: uppercase;
+                background-color: $color-primary;
+                color: #fff;
+            }
+
+            tbody {
+                tr {
+                    &:not(:last-child) {
+                        border-bottom: $outline-thin;
+                    }
+                    td {
+                        padding: 0.5rem;
+
+                        span {
+                            text-transform: uppercase;
+                        }
+
+                        p {
+                            font-weight: 600;
+                        }
+
+                        display: flex;
+                        justify-content: space-between;
+                    }
+                }
+            }
+        }
+    }
+
+    &__3,
+    &__4,
+    &__5 {
+        table {
+            font-size: 1.3rem;
+            background-color: #fff;
+            color: $color-primary;
+            width: 100%;
+            border-collapse: collapse;
+
+            caption {
+                font-size: 1.5rem;
+                font-weight: 500;
+                padding: 0.5rem;
+                text-transform: uppercase;
+                color: #fff;
+                background-color: $color-primary;
+                // display: none;
+            }
+
+            thead {
+                background-color: lighten($color-primary, 10%);
+                color: #fff;
+                text-align: left;
+
+                th {
+                    padding: 0.5rem;
+                    text-transform: uppercase;
+                    &:not(:last-child) {
+                        border-right: 2px solid #fff;
+                    }
+                }
+            }
+
+            tbody {
+                tr {
+                    &:not(:last-child) {
+                        border-bottom: $outline-thin;
+                    }
+                }
+
+                td {
+                    &:not(:first-child) {
+                        text-align: end;
+                    }
+
+                    &:not(:last-child) {
+                        border-right: $outline-thin;
+                    }
+
+                    padding: 0.5rem;
+                }
+            }
+
+            tfoot {
+                background-color: lighten($color-primary, 10%);
+                color: #fff;
+                text-align: end;
+                font-weight: 600;
+
+                td {
+                    padding: 0.5rem;
+                    &:not(:last-child) {
+                        border-right: 2px solid #fff;
+                    }
+                }
+            }
+        }
+    }
+
+    &__5 {
+        overflow: auto;
+    }
+}

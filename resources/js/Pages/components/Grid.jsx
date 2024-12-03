@@ -211,7 +211,7 @@ const Grid = ({
                             onClick={() => handleExport(tableData, reportName)}
                         >
                             <svg className="download-icon">
-                                <use xlinkHref="/images/sprite.svg#icon-chevrons-down"></use>
+                                <use xlinkHref="/images/sprite.svg#icon-download"></use>
                             </svg>
                         </button>
                     </li>

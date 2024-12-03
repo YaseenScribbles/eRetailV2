@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BarcodeController;
 use App\Http\Controllers\CostVsSaleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvoiceController;
@@ -49,6 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/users', [UserController::class, 'show'])->name('users.show');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
     Route::put('/users/{user}',[UserController::class,'update'])->name('users.update');
+    Route::get('/barcode', [BarcodeController::class, 'index'])->name('barcode');
+    Route::post('/barcode-report', [BarcodeController::class, 'report']);
 
     Route::get('/buyers', function (Request $request) {
         $f_year = $request->query('f_year');

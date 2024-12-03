@@ -33,11 +33,22 @@ const Navbar = () => {
                     <a
                         href="#"
                         className={`nav__link ${
+                            url == "/barcode" ? "nav__link--active" : ""
+                        }`}
+                        onClick={() => router.get("/barcode")}
+                    >
+                        Barcode
+                    </a>
+                </li>
+                <li className="nav__item">
+                    <a
+                        href="#"
+                        className={`nav__link ${
                             url == "/sales" ? "nav__link--active" : ""
                         }`}
                         onClick={() => router.get("/sales")}
                     >
-                        Sales Report
+                        Sales
                     </a>
                 </li>
                 <li className="nav__item">
@@ -48,7 +59,7 @@ const Navbar = () => {
                         }`}
                         onClick={() => router.get("/received")}
                     >
-                        Received Report
+                        Received
                     </a>
                 </li>
                 <li className="nav__item">
@@ -59,10 +70,11 @@ const Navbar = () => {
                         }`}
                         onClick={() => router.get("/stock")}
                     >
-                        Stock Report
+                        Stock
                     </a>
                 </li>
-                {JSON.parse(localStorage.getItem("eRetail_user"))?.has_invoice_report === "1" && (
+                {JSON.parse(localStorage.getItem("eRetail_user"))
+                    ?.has_invoice_report === "1" && (
                     <li className="nav__item">
                         <a
                             href="#"
@@ -71,7 +83,7 @@ const Navbar = () => {
                             }`}
                             onClick={() => router.get("/invoice")}
                         >
-                            Invoice Report
+                            Invoice
                         </a>
                     </li>
                 )}
@@ -83,10 +95,11 @@ const Navbar = () => {
                         }`}
                         onClick={() => router.get("/cvs")}
                     >
-                        CVS Report
+                        CVS
                     </a>
                 </li>
-                {JSON.parse(localStorage.getItem("eRetail_user"))?.role === "admin" && (
+                {JSON.parse(localStorage.getItem("eRetail_user"))?.role ===
+                    "admin" && (
                     <li className="nav__item">
                         <a
                             href="#"

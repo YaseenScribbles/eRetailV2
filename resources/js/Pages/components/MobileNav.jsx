@@ -29,6 +29,9 @@ const MobileNav = ({ show, setShowMobileNav }) => {
                 <div className="nav__item" onClick={() => get("/dashboard")}>
                     Dashboard
                 </div>
+                <div className="nav__item" onClick={() => get("/barcode")}>
+                    Barcode
+                </div>
                 <div className="nav__item" onClick={() => get("/sales")}>
                     Sales
                 </div>

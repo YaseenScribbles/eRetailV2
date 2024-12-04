@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Navbar from "./components/Navbar";
 import MobileNav from "./components/MobileNav";
 import { useForm } from "@inertiajs/react";
 import Toast from "./components/Toast";
-import { Html5Qrcode } from "html5-qrcode";
+import { BrowserCodeReader, BrowserQRCodeReader } from "@zxing/browser";
 
 const Barcode = (props) => {
     const [showMobileNav, setShowMobileNav] = useState(false);
@@ -16,31 +16,57 @@ const Barcode = (props) => {
     const [delivery, setDelivery] = useState([]);
     const [errors, setErrors] = useState([]);
     const [scanning, setScanning] = useState(false);
+    const videoRef = useRef(null);
 
-    const startScanning = () => {
-        const html5QrCode = new Html5Qrcode("barcode-scanner");
-        const config = { fps: 10, qrbox: 250 };
-
+    const startZXingScanner = async () => {
         setScanning(true);
-        html5QrCode
-            .start(
-                { facingMode: "environment" }, // Use rear-facing camera
-                config,
-                (decodedText) => {
-                    setData((prev) => ({ ...prev, barcode: decodedText }));
-                    html5QrCode
-                        .stop()
-                        .catch((err) => setErrors((prev) => [...prev, err]));
-                    setScanning(false);
-                },
-                (errorMessage) => {
-                    setErrors((prev) => [...prev, errorMessage]);
+        setData((prev) => ({ ...prev, barcode: "" })); // Reset previous barcode
+        setErrors([]); // Reset previous errors
+
+        const codeReader = new BrowserQRCodeReader();
+
+        try {
+            // Get list of video input devices (cameras)
+            const videoInputDevices =
+                await BrowserCodeReader.listVideoInputDevices();
+
+            if (videoInputDevices.length === 0) {
+                setErrors((prev) => [...prev, "No camera devices found."]);
+            }
+
+            // Select the first camera (or adjust to use specific cameras)
+            const selectedDeviceId = videoInputDevices[0].deviceId;
+
+            // Start decoding from the selected camera
+            codeReader.decodeFromVideoDevice(
+                selectedDeviceId,
+                videoRef.current,
+                (result, error) => {
+                    if (result) {
+                        setData((prev) => ({
+                            ...prev,
+                            barcode: result.getText(),
+                        }));
+                        codeReader.reset(); // Stop scanning after successful result
+                        setScanning(false);
+                    }
+
+                    if (error) {
+                        setErrors((prev) => [...prev, error]); // Log scanning errors (e.g., no barcode in frame)
+                    }
                 }
-            )
-            .catch((err) => {
-                setErrors((prev) => [...prev, err]);
-                setScanning(false);
-            });
+            );
+        } catch (err) {
+            setErrors((prev) => [...prev, err.message]);
+            setScanning(false);
+        }
+    };
+
+    const stopScanning = () => {
+        setScanning(false);
+        if (videoRef.current) {
+            videoRef.current.srcObject = null; // Stop video stream
+        }
     };
 
     const submitForm = (e) => {
@@ -55,6 +81,12 @@ const Barcode = (props) => {
             preserveScroll: true,
         });
     };
+
+    useEffect(() => {
+        return () => {
+            stopScanning(); // Clean up when component unmounts
+        };
+    }, []);
 
     useEffect(() => {
         if (errors.length > 0) {
@@ -104,6 +136,18 @@ const Barcode = (props) => {
                 show={showMobileNav}
                 setShowMobileNav={setShowMobileNav}
             />
+            {scanning && (
+                <video
+                    className="scanner"
+                    ref={videoRef}
+                    style={{
+                        width: "100%",
+                        maxWidth: "40rem",
+                        border: "1px solid #ccc",
+                        margin: "2rem 0",
+                    }}
+                ></video>
+            )}
             <div className="p-s-g">
                 <div className="title">
                     <h3>Search</h3>
@@ -131,12 +175,16 @@ const Barcode = (props) => {
                     <button
                         className="btn"
                         type="button"
-                        onClick={startScanning}
+                        onClick={startZXingScanner}
                         // disabled={scanning}
                     >
-                        {scanning ? "Scanning..." : <svg className="search-icon">
-                            <use xlinkHref="/images/sprite.svg#icon-magnifying-glass"></use>
-                        </svg>}
+                        {scanning ? (
+                            "Scanning..."
+                        ) : (
+                            <svg className="search-icon">
+                                <use xlinkHref="/images/sprite.svg#icon-magnifying-glass"></use>
+                            </svg>
+                        )}
                     </button>
                 </form>
                 {summary && summary.Barcode && (
@@ -416,7 +464,6 @@ const Barcode = (props) => {
                 )}
             </div>
             <Toast errors={errors} />
-            <div id="barcode-scanner" style={{ width: "100%" }} />
         </>
     );
 };

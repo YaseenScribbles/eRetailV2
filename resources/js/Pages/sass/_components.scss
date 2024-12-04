@@ -668,8 +668,11 @@
     }
 }
 
-#barcode-scanner {
-    border: 1px solid #ddd;
-    margin-top: 1rem;
-  }
+.scanner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    z-index: 300;
+}
 

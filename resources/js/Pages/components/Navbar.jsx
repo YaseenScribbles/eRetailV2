@@ -37,7 +37,7 @@ const Navbar = () => {
                         }`}
                         onClick={() => router.get("/barcode")}
                     >
-                        Barcode
+                        Search
                     </a>
                 </li>
                 <li className="nav__item">

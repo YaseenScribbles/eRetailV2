@@ -38,7 +38,7 @@
             outline: 3px solid transparent;
             flex: 0 0 15%;
             height: 100%;
-            min-height: 46px;
+            min-height: 5rem;
             padding: 0.5rem 1rem;
             border-radius: 0.5rem;
             font-family: inherit;
@@ -46,7 +46,7 @@
             transition: all 0.2s;
 
             @media screen and (max-width: 37.5em) {
-                min-height: 4.6rem;
+                min-height: 5.1rem;
                 padding: 0.5rem;
             }
 
@@ -69,6 +69,24 @@
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
+        }
+
+        .select {
+            flex: 0 0 20%;
+            margin-left: 2rem;
+            font-size: 1.5rem;
+
+            @media screen and (max-width: 37.5em) {
+                margin-left: 0;
+            }
+
+            .css-13cymwt-control {
+                min-height: 5.1rem;
+            }
+
+            .css-392qbm-control {
+                min-height: 5.1rem;
+            }
         }
 
         .btn {
@@ -181,6 +199,9 @@
                     }
 
                     padding: 0.5rem;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    text-wrap: nowrap;
                 }
             }
 
@@ -200,7 +221,26 @@
         }
     }
 
+    &__1,
+    &__2,
+    &__3,
+    &__4,
     &__5 {
         overflow: auto;
+        @media screen and (min-width: 62.5em) {
+            max-height: 40rem;
+        }
+    }
+
+    &__5 {
+        table {
+            tbody {
+                td {
+                    &:not(:nth-child(4)) {
+                        text-align: left;
+                    }
+                }
+            }
+        }
     }
 }

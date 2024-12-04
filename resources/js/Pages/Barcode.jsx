@@ -3,76 +3,26 @@ import Navbar from "./components/Navbar";
 import MobileNav from "./components/MobileNav";
 import { useForm } from "@inertiajs/react";
 import Toast from "./components/Toast";
-import { BrowserCodeReader, BrowserQRCodeReader } from "@zxing/browser";
+import ReactSelect from "react-select";
 
 const Barcode = (props) => {
     const [showMobileNav, setShowMobileNav] = useState(false);
     const { post, processing, data, setData } = useForm({
         barcode: "",
+        product_id: null,
     });
     const [summary, setSummary] = useState();
     const [stock, setStock] = useState([]);
     const [sales, setSales] = useState([]);
     const [delivery, setDelivery] = useState([]);
     const [errors, setErrors] = useState([]);
-    const [scanning, setScanning] = useState(false);
-    const videoRef = useRef(null);
-
-    const startZXingScanner = async () => {
-        setScanning(true);
-        setData((prev) => ({ ...prev, barcode: "" })); // Reset previous barcode
-        setErrors([]); // Reset previous errors
-
-        const codeReader = new BrowserQRCodeReader();
-
-        try {
-            // Get list of video input devices (cameras)
-            const videoInputDevices =
-                await BrowserCodeReader.listVideoInputDevices();
-
-            if (videoInputDevices.length === 0) {
-                setErrors((prev) => [...prev, "No camera devices found."]);
-            }
-
-            // Select the first camera (or adjust to use specific cameras)
-            const selectedDeviceId = videoInputDevices[0].deviceId;
-
-            // Start decoding from the selected camera
-            codeReader.decodeFromVideoDevice(
-                selectedDeviceId,
-                videoRef.current,
-                (result, error) => {
-                    if (result) {
-                        setData((prev) => ({
-                            ...prev,
-                            barcode: result.getText(),
-                        }));
-                        codeReader.reset(); // Stop scanning after successful result
-                        setScanning(false);
-                    }
-
-                    if (error) {
-                        setErrors((prev) => [...prev, error]); // Log scanning errors (e.g., no barcode in frame)
-                    }
-                }
-            );
-        } catch (err) {
-            setErrors((prev) => [...prev, err.message]);
-            setScanning(false);
-        }
-    };
-
-    const stopScanning = () => {
-        setScanning(false);
-        if (videoRef.current) {
-            videoRef.current.srcObject = null; // Stop video stream
-        }
-    };
+    const [products, setProducts] = useState([]);
+    const [selectedProduct, setSelectedProduct] = useState(null);
 
     const submitForm = (e) => {
         e.preventDefault();
-        if (!data.barcode) {
-            setErrors((prev) => [...prev, "Please enter barcode"]);
+        if (!data.barcode && !data.product_id) {
+            setErrors((prev) => [...prev, "Please fill / select one"]);
             return;
         }
 
@@ -81,12 +31,6 @@ const Barcode = (props) => {
             preserveScroll: true,
         });
     };
-
-    useEffect(() => {
-        return () => {
-            stopScanning(); // Clean up when component unmounts
-        };
-    }, []);
 
     useEffect(() => {
         if (errors.length > 0) {
@@ -99,6 +43,13 @@ const Barcode = (props) => {
     }, [errors]);
 
     useEffect(() => {
+        if (props.products) {
+            const products = props.products.map((p) => ({
+                label: p.Catalog,
+                value: p.CatalogId,
+            }));
+            setProducts(products);
+        }
         if (props.errors) {
             Object.entries(props.errors).forEach((e) => {
                 setErrors((prev) => [...prev, e[1]]);
@@ -136,18 +87,6 @@ const Barcode = (props) => {
                 show={showMobileNav}
                 setShowMobileNav={setShowMobileNav}
             />
-            {scanning && (
-                <video
-                    className="scanner"
-                    ref={videoRef}
-                    style={{
-                        width: "100%",
-                        maxWidth: "40rem",
-                        border: "1px solid #ccc",
-                        margin: "2rem 0",
-                    }}
-                ></video>
-            )}
             <div className="p-s-g">
                 <div className="title">
                     <h3>Search</h3>
@@ -159,32 +98,41 @@ const Barcode = (props) => {
                         className="input"
                         id="universal-input"
                         value={data.barcode}
-                        onChange={(e) =>
-                            setData((prev) => ({
-                                ...prev,
+                        onChange={(e) => {
+                            setData({
                                 barcode: e.target.value,
-                            }))
-                        }
+                                product_id: null,
+                            });
+                            setSelectedProduct(null);
+                        }}
                     />
                     <label htmlFor="universal-input" className="label">
                         Barcode
                     </label>
+                    <ReactSelect
+                        className="select"
+                        options={products}
+                        value={selectedProduct}
+                        onChange={(e) => {
+                            if (e) {
+                                setData({ barcode: "", product_id: +e.value });
+                                setSelectedProduct(e);
+                            }
+                        }}
+                        placeholder="Select Product"
+                        theme={(theme) => ({
+                            ...theme,
+                            colors: {
+                                ...theme.colors,
+                                primary75: "#638663",
+                                primary50: "#638663",
+                                primary25: "#638663",
+                                primary: "#638663",
+                            },
+                        })}
+                    />
                     <button className="btn" type="submit">
                         Go
-                    </button>
-                    <button
-                        className="btn"
-                        type="button"
-                        onClick={startZXingScanner}
-                        // disabled={scanning}
-                    >
-                        {scanning ? (
-                            "Scanning..."
-                        ) : (
-                            <svg className="search-icon">
-                                <use xlinkHref="/images/sprite.svg#icon-magnifying-glass"></use>
-                            </svg>
-                        )}
                     </button>
                 </form>
                 {summary && summary.Barcode && (

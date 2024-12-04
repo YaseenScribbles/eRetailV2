@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class BarcodeController extends Controller
 {
     public function index()
     {
+        $productsSql = "SELECT CatalogId, Catalog FROM TSCatalog";
+        $products = DB::select($productsSql);
+
         $summary = session('barcode_summary', []);
         session()->forget('barcode_summary');
         $stock = session('barcode_stock', []);
@@ -18,29 +22,32 @@ class BarcodeController extends Controller
         session()->forget('barcode_sales');
         $delivery = session('barcode_delivery', []);
         session()->forget('barcode_delivery');
-        return inertia('Barcode', compact('summary', 'stock', 'sales', 'delivery'));
+        return inertia('Barcode', compact('summary', 'stock', 'sales', 'delivery', 'products'));
     }
 
     public function report(Request $request)
     {
         $data = $request->validate([
-            'barcode' => 'required|string|exists:productmaster,plucode'
+            'barcode' => 'nullable|string|exists:productmaster,plucode',
+            'product_id' => 'nullable|numeric|exists:tscatalog,catalogid'
         ]);
 
-        $summary = $this->getBarcodeSummary($data['barcode']);
-        session(['barcode_summary' => $summary]);
-        $stock = $this->getStock($data['barcode']);
+        if ($request->barcode) {
+            $summary = $this->getBarcodeSummary($data['barcode']);
+            session(['barcode_summary' => $summary]);
+        }
+        $stock = $this->getStock($data['barcode'], $data['product_id']);
         session(['barcode_stock' => $stock]);
-        $sales = $this->getSales($data['barcode']);
+        $sales = $this->getSales($data['barcode'], $data['product_id']);
         session(['barcode_sales' => $sales]);
-        $delivery = $this->getDelivery($data['barcode']);
+        $delivery = $this->getDelivery($data['barcode'], $data['product_id']);
         session(['barcode_delivery' => $delivery]);
 
         return to_route('barcode');
     }
 
 
-    public function getBarcodeSummary(string $barcode)
+    public function getBarcodeSummary($barcode)
     {
         try {
             //code...
@@ -64,17 +71,30 @@ class BarcodeController extends Controller
         }
     }
 
-    public function getStock(string $barcode)
+    public function getStock($barcode, $product_id)
     {
         try {
             //code...
             $shop_ids = auth()->user()->shops;
-            $sql = "SELECT S.ShopName, ST.stock, PM.CostPrice, PM.RetailPrice
+
+            $dynamic_columns = $barcode
+            ? "PM.CostPrice, PM.RetailPrice"
+            : "SUM(ST.stock * PM.CostPrice) AS CostPrice, SUM(ST.stock * PM.RetailPrice) AS RetailPrice";
+
+            $sql = "SELECT S.ShopName, SUM(ST.stock) stock, $dynamic_columns
             FROM v_stockpos ST
             INNER JOIN ProductMaster P ON P.PluID = ST.pluid
             INNER JOIN Shops S ON S.ShopID = ST.location_id AND S.ShopId IN ($shop_ids)
             INNER JOIN PriceMaster PM ON PM.PluId = P.PluId AND PM.ShopId = ST.location_id
-            WHERE P.Plucode = '$barcode'";
+            INNER JOIN ProductAttributes A ON A.PluId = ST.PluId";
+
+            if ($barcode) {
+                $sql .= " WHERE P.Plucode = '$barcode' GROUP BY S.ShopName, PM.CostPrice, PM.RetailPrice";
+            } else {
+                $sql .= " WHERE A.CatalogId = $product_id GROUP BY S.ShopName";
+            }
+
+            Log::info($sql);
 
             $report = DB::select($sql);
 
@@ -85,7 +105,7 @@ class BarcodeController extends Controller
         }
     }
 
-    public function getSales(string $barcode)
+    public function getSales($barcode, $product_id)
     {
         try {
             //code...
@@ -94,8 +114,16 @@ class BarcodeController extends Controller
             FROM BillDetails BD
             INNER JOIN ProductMaster P ON P.PluID = BD.pluid
             INNER JOIN Shops S ON S.ShopID = BD.ShopID AND S.ShopId IN ($shop_ids)
-            WHERE P.Plucode = '$barcode'
-            GROUP BY S.ShopName";
+            INNER JOIN ProductAttributes A ON A.PluId = BD.PluId";
+
+
+            if ($barcode) {
+                $sql .= " WHERE P.Plucode = '$barcode'";
+            } else {
+                $sql .= " WHERE A.CatalogId = $product_id";
+            }
+
+            $sql .= " GROUP BY S.ShopName";
 
             $report = DB::select($sql);
 
@@ -106,7 +134,7 @@ class BarcodeController extends Controller
         }
     }
 
-    public function getDelivery(string $barcode)
+    public function getDelivery($barcode, $product_id)
     {
         try {
             //code...
@@ -119,9 +147,16 @@ class BarcodeController extends Controller
             INNER JOIN DeliveryMaster DM ON DM.Id = DD.Id
             INNER JOIN ReceivedMaster RM ON DM.DeliveryCode = RM.DeliveryCode
             INNER JOIN Shops S1 ON S1.ShopID = DM.DeliveryTo AND S1.ShopId IN ($shop_ids)
-            INNER JOIN Shops S2 ON S2.ShopID = DM.DeliveryFrom AND S2.ShopId IN ($shop_ids)
-            WHERE P.Plucode = '$barcode'
-            GROUP BY DM.DeliveryCode, S2.ShopName, S1.ShopName, DM.DeliveryDate, RM.DeliveryDate";
+            INNER JOIN Shops S2 ON S2.ShopID = DM.DeliveryFrom
+            INNER JOIN ProductAttributes A ON A.PluId = DD.PluId";
+
+            if ($barcode) {
+                $sql .= " WHERE P.Plucode = '$barcode'";
+            } else {
+                $sql .= " WHERE A.CatalogId = $product_id";
+            }
+
+            $sql  .= " GROUP BY DM.DeliveryCode, S2.ShopName, S1.ShopName, DM.DeliveryDate, RM.DeliveryDate ORDER BY DM.DeliveryDate DESC";
 
             $report = DB::select($sql);
 

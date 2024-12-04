@@ -30,7 +30,7 @@ const MobileNav = ({ show, setShowMobileNav }) => {
                     Dashboard
                 </div>
                 <div className="nav__item" onClick={() => get("/barcode")}>
-                    Barcode
+                    Search
                 </div>
                 <div className="nav__item" onClick={() => get("/sales")}>
                     Sales

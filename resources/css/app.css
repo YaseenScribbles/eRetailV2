@@ -1105,7 +1105,7 @@ body {
   outline: 3px solid transparent;
   flex: 0 0 15%;
   height: 100%;
-  min-height: 46px;
+  min-height: 5rem;
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   font-family: inherit;
@@ -1114,7 +1114,7 @@ body {
 }
 @media screen and (max-width: 37.5em) {
   .p-s-g__form .input {
-    min-height: 4.6rem;
+    min-height: 5.1rem;
     padding: 0.5rem;
   }
 }
@@ -1134,6 +1134,22 @@ body {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+}
+.p-s-g__form .select {
+  flex: 0 0 20%;
+  margin-left: 2rem;
+  font-size: 1.5rem;
+}
+@media screen and (max-width: 37.5em) {
+  .p-s-g__form .select {
+    margin-left: 0;
+  }
+}
+.p-s-g__form .select .css-13cymwt-control {
+  min-height: 5.1rem;
+}
+.p-s-g__form .select .css-392qbm-control {
+  min-height: 5.1rem;
 }
 .p-s-g__form .btn {
   flex: 0 0 10%;
@@ -1210,6 +1226,9 @@ body {
 }
 .p-s-g__3 table tbody td, .p-s-g__4 table tbody td, .p-s-g__5 table tbody td {
   padding: 0.5rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-wrap: nowrap;
 }
 .p-s-g__3 table tbody td:not(:first-child), .p-s-g__4 table tbody td:not(:first-child), .p-s-g__5 table tbody td:not(:first-child) {
   text-align: end;
@@ -1229,8 +1248,16 @@ body {
 .p-s-g__3 table tfoot td:not(:last-child), .p-s-g__4 table tfoot td:not(:last-child), .p-s-g__5 table tfoot td:not(:last-child) {
   border-right: 2px solid #fff;
 }
-.p-s-g__5 {
+.p-s-g__1, .p-s-g__2, .p-s-g__3, .p-s-g__4, .p-s-g__5 {
   overflow: auto;
+}
+@media screen and (min-width: 62.5em) {
+  .p-s-g__1, .p-s-g__2, .p-s-g__3, .p-s-g__4, .p-s-g__5 {
+    max-height: 40rem;
+  }
+}
+.p-s-g__5 table tbody td:not(:nth-child(4)) {
+  text-align: left;
 }
 
 /*# sourceMappingURL=app.css.map */

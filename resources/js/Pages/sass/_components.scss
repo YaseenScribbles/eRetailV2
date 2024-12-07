@@ -151,10 +151,6 @@
     gap: 2rem;
     z-index: 101;
     transition: all 0.2s;
-
-    @media screen and (max-width: 85.375em) {
-        top: 7%;
-    }
 }
 
 .toast {

@@ -131,11 +131,6 @@
   z-index: 101;
   transition: all 0.2s;
 }
-@media screen and (max-width: 85.375em) {
-  .toast-container {
-    top: 7%;
-  }
-}
 
 .toast {
   opacity: 0;

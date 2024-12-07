@@ -552,8 +552,48 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translateX(-50%) translateY(-50%);
-  z-index: 300;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  background: #fff;
+}
+@media screen and (max-width: 37.5em) {
+  .scanner {
+    width: 90%;
+  }
+}
+.scanner #reader {
+  padding: 2rem !important;
+  font-size: 1.3rem;
+}
+.scanner #reader button {
+  background-color: #638663;
+  color: #F2F5F2;
+  border: 1px solid transparent;
+  outline: 1px solid transparent;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.scanner #reader button:hover {
+  background-color: rgb(77.330472103, 104.669527897, 77.330472103);
+}
+.scanner #reader .html5-qrcode-element {
+  display: block;
+  width: fit-content;
+  text-decoration: none !important;
+  background-color: #638663;
+  color: #F2F5F2;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  transition: all 0.25s;
+}
+.scanner #reader .html5-qrcode-element:hover {
+  background-color: rgb(77.330472103, 104.669527897, 77.330472103);
 }
 
 :root {

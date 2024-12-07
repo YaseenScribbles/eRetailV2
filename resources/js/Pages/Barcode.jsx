@@ -1,9 +1,10 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import MobileNav from "./components/MobileNav";
 import { useForm } from "@inertiajs/react";
 import Toast from "./components/Toast";
 import ReactSelect from "react-select";
+import Scanner from "./components/Scanner";
 
 const Barcode = (props) => {
     const [showMobileNav, setShowMobileNav] = useState(false);
@@ -18,6 +19,8 @@ const Barcode = (props) => {
     const [errors, setErrors] = useState([]);
     const [products, setProducts] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [barcode, setBarcode] = useState("");
+    const [showScanner, setShowScanner] = useState(false);
 
     const submitForm = (e) => {
         e.preventDefault();
@@ -31,6 +34,16 @@ const Barcode = (props) => {
             preserveScroll: true,
         });
     };
+
+    useEffect(() => {
+        if (barcode) {
+            setData({
+                barcode: barcode,
+                product_id: null,
+            });
+            submitForm();
+        }
+    }, [barcode]);
 
     useEffect(() => {
         if (errors.length > 0) {
@@ -87,6 +100,13 @@ const Barcode = (props) => {
                 show={showMobileNav}
                 setShowMobileNav={setShowMobileNav}
             />
+            {showScanner && (
+                <Scanner
+                    setShowScanner={setShowScanner}
+                    setBarcode={setBarcode}
+                    setErrors={setErrors}
+                />
+            )}
             <div className="p-s-g">
                 <div className="title">
                     <h3>Search</h3>
@@ -133,6 +153,13 @@ const Barcode = (props) => {
                     />
                     <button className="btn" type="submit">
                         Go
+                    </button>
+                    <button
+                        className="btn"
+                        type="button"
+                        onClick={() => setShowScanner(true)}
+                    >
+                        Scan
                     </button>
                 </form>
                 {summary && summary.Barcode && (

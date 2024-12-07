@@ -52,6 +52,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/users/{user}',[UserController::class,'update'])->name('users.update');
     Route::get('/barcode', [BarcodeController::class, 'index'])->name('barcode');
     Route::post('/barcode-report', [BarcodeController::class, 'report']);
+    Route::get('/scanner', function() {
+        return inertia('components/Scanner');
+    });
 
     Route::get('/buyers', function (Request $request) {
         $f_year = $request->query('f_year');

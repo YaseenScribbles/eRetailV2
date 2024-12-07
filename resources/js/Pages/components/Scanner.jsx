@@ -6,17 +6,12 @@ const Scanner = ({ setBarcode, setErrors, setShowScanner }) => {
 
     useEffect(() => {
         let scanner = new Html5QrcodeScanner("reader", {
-            fps: 5,
-            qrbox: { width: 500, height: 150 },
-            useBarCodeDetectorIfSupported: true,
+            fps: 10,
+            qrbox: { width: 250, height: 250 },
             formatsToSupport: [
                 Html5QrcodeSupportedFormats.CODE_128,
                 Html5QrcodeSupportedFormats.QR_CODE,
             ],
-            videoConstraints: {
-                width: { ideal: 1280 },
-                height: { ideal: 720 },
-            },
         });
 
         const success = async (result) => {

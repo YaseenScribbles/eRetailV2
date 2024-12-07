@@ -41,7 +41,6 @@ const Barcode = (props) => {
                 barcode: barcode,
                 product_id: null,
             });
-            submitForm();
         }
     }, [barcode]);
 

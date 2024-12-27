@@ -95,34 +95,52 @@ const Grid = ({
                         ))}
                     </thead>
                     <tbody>
-                        {table.getRowModel().rows.map((row) => (
-                            <tr key={row.id}>
-                                {row.getVisibleCells().map((cell) => {
-                                    const isTooltipColumn =
-                                        tooltipColumns.includes(cell.column.id);
-                                    return (
-                                        <td
-                                            key={cell.id}
-                                            className={`${
-                                                isTooltipColumn ? "tooltip" : ""
-                                            }`}
-                                            title={
-                                                isTooltipColumn
-                                                    ? cell.getValue()
-                                                    : ""
-                                            }
-                                        >
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )}
-                                        </td>
-                                    );
-                                })}
+                        {tableData.length > 0 ? (
+                            table.getRowModel().rows.map((row) => (
+                                <tr key={row.id}>
+                                    {row.getVisibleCells().map((cell) => {
+                                        const isTooltipColumn =
+                                            tooltipColumns.includes(
+                                                cell.column.id
+                                            );
+                                        return (
+                                            <td
+                                                key={cell.id}
+                                                className={`${
+                                                    isTooltipColumn
+                                                        ? "tooltip"
+                                                        : ""
+                                                }`}
+                                                title={
+                                                    isTooltipColumn
+                                                        ? cell.getValue()
+                                                        : ""
+                                                }
+                                            >
+                                                {flexRender(
+                                                    cell.column.columnDef.cell,
+                                                    cell.getContext()
+                                                )}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td
+                                    colSpan={
+                                        table.getHeaderGroups()[0].headers
+                                            .length
+                                    }
+                                    style={{ textAlign: "center" }}
+                                >
+                                    No Data
+                                </td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
-                    {footerRequired && (
+                    {tableData.length > 0 && footerRequired && (
                         <tfoot>
                             {table.getFooterGroups().map((footerGroup) => (
                                 <tr key={footerGroup.id}>
@@ -140,83 +158,89 @@ const Grid = ({
                     )}
                 </table>
             </div>
-            <div className="pagination">
-                <ul className="pagination__list">
-                    <li className="pagination__item">
-                        <button
-                            className="pagination__btn"
-                            disabled={!table.getCanPreviousPage()}
-                            onClick={() => table.setPageIndex(0)}
-                        >
-                            <svg className="pagination__icon">
-                                <use xlinkHref="/images/sprite.svg#icon-chevrons-left"></use>
-                            </svg>
-                        </button>
-                    </li>
-                    <li className="pagination__item">
-                        <button
-                            className="pagination__btn"
-                            disabled={!table.getCanPreviousPage()}
-                            onClick={() => table.previousPage()}
-                        >
-                            <svg className="pagination__icon">
-                                <use xlinkHref="/images/sprite.svg#icon-chevron-left"></use>
-                            </svg>
-                        </button>
-                    </li>
-                    <li className="pagination__item">
-                        <input
-                            type="number"
-                            className="pagination__input"
-                            min={1}
-                            max={table.getPageCount()}
-                            value={table.getState().pagination.pageIndex + 1}
-                            onChange={(e) => {
-                                const pageIndex = e.target.value
-                                    ? Number(e.target.value) - 1
-                                    : 0;
-                                table.setPageIndex(pageIndex);
-                            }}
-                        />
-                        <span>of {table.getPageCount()}</span>
-                    </li>
-                    <li className="pagination__item">
-                        <button
-                            className="pagination__btn"
-                            disabled={!table.getCanNextPage()}
-                            onClick={() => table.nextPage()}
-                        >
-                            <svg className="pagination__icon">
-                                <use xlinkHref="/images/sprite.svg#icon-chevron-right"></use>
-                            </svg>
-                        </button>
-                    </li>
-                    <li className="pagination__item">
-                        <button
-                            className="pagination__btn"
-                            disabled={!table.getCanNextPage()}
-                            onClick={() =>
-                                table.setPageIndex(table.getPageCount() - 1)
-                            }
-                        >
-                            <svg className="pagination__icon">
-                                <use xlinkHref="/images/sprite.svg#icon-chevrons-right"></use>
-                            </svg>
-                        </button>
-                    </li>
-                    <li className="pagination__item">
-                        <button
-                            className="btn btn--download"
-                            disabled={tableData.length === 0}
-                            onClick={() => handleExport(tableData, reportName)}
-                        >
-                            <svg className="download-icon">
-                                <use xlinkHref="/images/sprite.svg#icon-download"></use>
-                            </svg>
-                        </button>
-                    </li>
-                </ul>
-            </div>
+            {tableData.length > 0 && (
+                <div className="pagination">
+                    <ul className="pagination__list">
+                        <li className="pagination__item">
+                            <button
+                                className="pagination__btn"
+                                disabled={!table.getCanPreviousPage()}
+                                onClick={() => table.setPageIndex(0)}
+                            >
+                                <svg className="pagination__icon">
+                                    <use xlinkHref="/images/sprite.svg#icon-chevrons-left"></use>
+                                </svg>
+                            </button>
+                        </li>
+                        <li className="pagination__item">
+                            <button
+                                className="pagination__btn"
+                                disabled={!table.getCanPreviousPage()}
+                                onClick={() => table.previousPage()}
+                            >
+                                <svg className="pagination__icon">
+                                    <use xlinkHref="/images/sprite.svg#icon-chevron-left"></use>
+                                </svg>
+                            </button>
+                        </li>
+                        <li className="pagination__item">
+                            <input
+                                type="number"
+                                className="pagination__input"
+                                min={1}
+                                max={table.getPageCount()}
+                                value={
+                                    table.getState().pagination.pageIndex + 1
+                                }
+                                onChange={(e) => {
+                                    const pageIndex = e.target.value
+                                        ? Number(e.target.value) - 1
+                                        : 0;
+                                    table.setPageIndex(pageIndex);
+                                }}
+                            />
+                            <span>of {table.getPageCount()}</span>
+                        </li>
+                        <li className="pagination__item">
+                            <button
+                                className="pagination__btn"
+                                disabled={!table.getCanNextPage()}
+                                onClick={() => table.nextPage()}
+                            >
+                                <svg className="pagination__icon">
+                                    <use xlinkHref="/images/sprite.svg#icon-chevron-right"></use>
+                                </svg>
+                            </button>
+                        </li>
+                        <li className="pagination__item">
+                            <button
+                                className="pagination__btn"
+                                disabled={!table.getCanNextPage()}
+                                onClick={() =>
+                                    table.setPageIndex(table.getPageCount() - 1)
+                                }
+                            >
+                                <svg className="pagination__icon">
+                                    <use xlinkHref="/images/sprite.svg#icon-chevrons-right"></use>
+                                </svg>
+                            </button>
+                        </li>
+                        <li className="pagination__item">
+                            <button
+                                className="btn btn--download"
+                                disabled={tableData.length === 0}
+                                onClick={() =>
+                                    handleExport(tableData, reportName)
+                                }
+                            >
+                                <svg className="download-icon">
+                                    <use xlinkHref="/images/sprite.svg#icon-download"></use>
+                                </svg>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            )}
         </div>
     );
 };

@@ -117,7 +117,7 @@
             transparent 50%,
             darken($color-primary, 10%) 50%
         );
-        background-size: 240%;
+        background-size: 260%;
         background-repeat: no-repeat;
     }
 
@@ -660,6 +660,8 @@
     }
 }
 
+
+
 .scanner {
     position: absolute;
     top: 50%;
@@ -667,6 +669,9 @@
     transform: translate(-50%, -50%);
     z-index: 100;
     background: #fff;
+    opacity: 1;
+    visibility: visible;
+    transition: all 0.4s;
 
     @media screen and (max-width: 37.5em) {
         width: 90%;
@@ -709,5 +714,14 @@
                 background-color: darken($color-primary, 10%);
             }
         }
+    }
+}
+
+
+@starting-style {
+    .scanner {
+        opacity: 0;
+        visibility: hidden;
+        transform: translate(-50%, -55%); /* Slight offset for a slide-in effect */
     }
 }

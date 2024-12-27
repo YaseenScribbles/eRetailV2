@@ -565,6 +565,8 @@ const Sales = (props) => {
                     }))
                 );
             }
+        } else {
+            setTableData([]);
         }
     }, [props]);
 
@@ -690,31 +692,16 @@ const Sales = (props) => {
                         </button>
                     </div>
                 </form>
-                {tableData.length > 0 && (
-                    //<div
-                    //    className="ag-theme-quartz grid" // applying the Data Grid theme
-                    //    style={{ height: "50rem", width: "100%" }} // the Data Grid will fill the size of the parent container
-                    //>
-                    //    <AgGridReact
-                    //        rowData={rowData}
-                    //        columnDefs={colDefs}
-                    //        pagination
-                    //        defaultColDef={defaultColDef}
-                    //        paginationPageSize={10}
-                    //        paginationPageSizeSelector={[10, 25, 50]}
-                    //    />
-                    //</div>
-                    <Grid
-                        globalFilter={globalFilter}
-                        setGlobalFilter={setGlobalFilter}
-                        table={table}
-                        tableData={tableData}
-                        reportName={"Sales Report"}
-                        tooltipColumns={
-                            reportStyle === "details" ? ["description"] : []
-                        }
-                    />
-                )}
+                <Grid
+                    globalFilter={globalFilter}
+                    setGlobalFilter={setGlobalFilter}
+                    table={table}
+                    tableData={tableData}
+                    reportName={"Sales Report"}
+                    tooltipColumns={
+                        reportStyle === "details" ? ["description"] : []
+                    }
+                />
                 <Toast errors={errors} />
             </div>
         </>

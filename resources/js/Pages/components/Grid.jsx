@@ -1,5 +1,6 @@
 import * as XLSX from "xlsx";
 import { flexRender } from "@tanstack/react-table"; // or wherever it's coming from
+import { format, parse } from "date-fns";
 
 const Grid = ({
     globalFilter,
@@ -30,13 +31,9 @@ const Grid = ({
                 let value = row[key];
 
                 // Format date fields based on header
-                if (
-                    isDateField(key) &&
-                    typeof value === "string" &&
-                    !isNaN(Date.parse(value))
-                ) {
-                    const date = new Date(value);
-                    value = date.toLocaleDateString();
+                if (isDateField(key) && typeof value === "string") {
+                    const parsedDate = parse(value, "dd/MM/yyyy", new Date());
+                    value = format(parsedDate, "dd-MM-yyyy");
                 }
 
                 // Convert numeric strings to numbers
@@ -50,7 +47,9 @@ const Grid = ({
         });
 
         // Convert the data into a worksheet and workbook
-        const worksheet = XLSX.utils.json_to_sheet(processedData);
+        const worksheet = XLSX.utils.json_to_sheet(processedData, {
+            cellDates: true,
+        });
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
 

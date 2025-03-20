@@ -84,15 +84,16 @@ const SMS = (props) => {
     });
 
     const sendSms = async () => {
+        setShowAlert(false);
         if (!message) {
-            props.addError("Message not updated");
+            addError("Message not updated");
             return;
         }
         post("/sms", {
             preserveScroll: true,
             preserveState: true,
             onSuccess: () => {
-                props.addError("Sms sent successfully");
+                addError("Sms sent successfully");
             },
         });
     };

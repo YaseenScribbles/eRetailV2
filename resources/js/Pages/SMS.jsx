@@ -271,7 +271,7 @@ const SMS = (props) => {
                     footerRequired={false}
                 />
                 <SmsModal
-                    mobile="9842073603"
+                    mobile="8870844411"
                     template={data.template}
                     show={showModal}
                     setShow={setShowModal}

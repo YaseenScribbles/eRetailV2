@@ -40,6 +40,14 @@
         position: relative;
     }
 
+    &--no {
+        background-color: $color-secondary;
+    }
+
+    &--login {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    }
+
     &:disabled {
         color: #999;
 
@@ -154,15 +162,17 @@
 }
 
 .toast {
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10%);
     background-color: $color-primary;
     color: $color-white;
     padding: 1rem 2rem;
     min-width: 25rem;
     flex: 0 0 100%;
-    transition: all 0.2s;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10%);
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.25s ease-in-out;
 
     .app-name {
         .app-icon {
@@ -187,6 +197,26 @@
         display: inline-block;
         margin-top: 1rem;
         padding: 0.5rem;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10%);
+    }
+
+    50% {
+        opacity: 0.5;
+        visibility: visible;
+        transform: translateY(5%);
+    }
+
+    100% {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
     }
 }
 
@@ -578,6 +608,7 @@
     opacity: 0;
     visibility: hidden;
     transition: all 0.2s ease-out;
+    overflow-y: auto;
 
     @media screen and (min-width: 37.5em) {
         display: none;
@@ -604,8 +635,8 @@
         width: 5rem;
         fill: currentColor;
         position: absolute;
-        bottom: 5%;
-        right: 45%;
+        bottom: 3%;
+        right: 3%;
         cursor: pointer;
         transition: transform 0.25s ease-in-out 0.1s;
 
@@ -659,8 +690,6 @@
         fill: $color-white;
     }
 }
-
-
 
 .scanner {
     position: absolute;
@@ -717,11 +746,98 @@
     }
 }
 
-
 @starting-style {
     .scanner {
         opacity: 0;
         visibility: hidden;
-        transform: translate(-50%, -55%); /* Slight offset for a slide-in effect */
+        transform: translate(
+            -50%,
+            -55%
+        ); /* Slight offset for a slide-in effect */
+    }
+}
+
+.modal {
+    opacity: 1;
+    visibility: visible;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid transparent;
+    min-width: 35rem;
+    max-width: 35rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    background: transparent;
+    border-radius: 1rem;
+    overflow: hidden;
+
+    transition: all 0.25s;
+
+    @starting-style {
+        opacity: 0;
+        visibility: hidden;
+        transform: translate(-50%, -55%);
+    }
+
+    .modal__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: color-mix(in srgb, $color-primary 80%, #000 20%);
+        color: $color-white;
+        font-size: 1.6rem;
+        padding: 1rem;
+
+        .close-icon {
+            height: 2rem;
+            width: 2rem;
+            fill: $color-white;
+        }
+    }
+
+    .modal__body {
+        padding: 1.5rem 2rem;
+        background-color: $color-white;
+
+        p {
+            font-size: 2rem;
+            margin-block-end: 1rem;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+
+            .input {
+                border: 3px solid transparent;
+                outline: 3px solid transparent;
+                width: 100%;
+                height: 100%;
+                min-height: 46px;
+                padding: 1rem;
+                border-radius: 0.5rem;
+                font-family: inherit;
+                font-size: 1.5rem;
+                transition: all 0.2s;
+
+                &:focus {
+                    outline: $outline;
+                }
+            }
+
+            label {
+                display: block;
+                font-size: 1.4rem;
+                color: #575d56;
+                margin-bottom: 0.5rem;
+            }
+        }
     }
 }

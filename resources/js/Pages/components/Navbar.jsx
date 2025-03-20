@@ -104,6 +104,20 @@ const Navbar = () => {
                         <a
                             href="#"
                             className={`nav__link ${
+                                url == "/sms" ? "nav__link--active" : ""
+                            }`}
+                            onClick={() => router.get("/sms")}
+                        >
+                            SMS
+                        </a>
+                    </li>
+                )}
+                {JSON.parse(localStorage.getItem("eRetail_user"))?.role ===
+                    "admin" && (
+                    <li className="nav__item">
+                        <a
+                            href="#"
+                            className={`nav__link ${
                                 url == "/users" ? "nav__link--active" : ""
                             }`}
                             onClick={() => router.get("/users")}

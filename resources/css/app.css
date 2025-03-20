@@ -37,6 +37,12 @@
   box-shadow: none;
   position: relative;
 }
+.btn--no {
+  background-color: #AAC0AA;
+}
+.btn--login {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
 .btn:disabled {
   color: #999;
 }
@@ -133,15 +139,17 @@
 }
 
 .toast {
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10%);
   background-color: #638663;
   color: #F2F5F2;
   padding: 1rem 2rem;
   min-width: 25rem;
   flex: 0 0 100%;
-  transition: all 0.2s;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10%);
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.25s ease-in-out;
 }
 .toast .app-name {
   display: flex;
@@ -166,6 +174,23 @@
   padding: 0.5rem;
 }
 
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10%);
+  }
+  50% {
+    opacity: 0.5;
+    visibility: visible;
+    transform: translateY(5%);
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
 .toast.show {
   opacity: 1;
   visibility: visible;
@@ -473,6 +498,7 @@
   opacity: 0;
   visibility: hidden;
   transition: all 0.2s ease-out;
+  overflow-y: auto;
 }
 @media screen and (min-width: 37.5em) {
   .mobile-nav {
@@ -497,8 +523,8 @@
   width: 5rem;
   fill: currentColor;
   position: absolute;
-  bottom: 5%;
-  right: 45%;
+  bottom: 3%;
+  right: 3%;
   cursor: pointer;
   transition: transform 0.25s ease-in-out 0.1s;
   transform: translateY(2rem);
@@ -601,6 +627,82 @@
     transform: translate(-50%, -55%); /* Slight offset for a slide-in effect */
   }
 }
+.modal {
+  opacity: 1;
+  visibility: visible;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid transparent;
+  min-width: 35rem;
+  max-width: 35rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  background: transparent;
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: all 0.25s;
+}
+@starting-style {
+  .modal {
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, -55%);
+  }
+}
+.modal .modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: color-mix(in srgb, #638663 80%, #000 20%);
+  color: #F2F5F2;
+  font-size: 1.6rem;
+  padding: 1rem;
+}
+.modal .modal__header .close-icon {
+  height: 2rem;
+  width: 2rem;
+  fill: #F2F5F2;
+}
+.modal .modal__body {
+  padding: 1.5rem 2rem;
+  background-color: #F2F5F2;
+}
+.modal .modal__body p {
+  font-size: 2rem;
+  margin-block-end: 1rem;
+}
+.modal .modal__body .buttons {
+  display: flex;
+  gap: 1rem;
+}
+.modal .modal__body .form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.modal .modal__body .form .input {
+  border: 3px solid transparent;
+  outline: 3px solid transparent;
+  width: 100%;
+  height: 100%;
+  min-height: 46px;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  font-family: inherit;
+  font-size: 1.5rem;
+  transition: all 0.2s;
+}
+.modal .modal__body .form .input:focus {
+  outline: 2px solid #638663;
+}
+.modal .modal__body .form label {
+  display: block;
+  font-size: 1.4rem;
+  color: #575d56;
+  margin-bottom: 0.5rem;
+}
+
 :root {
   --primary-color: $color-primary;
 }
@@ -656,6 +758,7 @@ body {
   width: 20vw;
   padding: 5rem;
   border-radius: 1rem;
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -729,7 +832,7 @@ body {
   font-size: 1.5rem;
   height: 5rem;
   width: 100%;
-  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
   transition: all 0.2s;
 }
 .login__form .input:focus {
@@ -1303,6 +1406,16 @@ body {
 }
 .p-s-g__5 table tbody td:not(:nth-child(4)) {
   text-align: left;
+}
+
+.sms .form__group:nth-child(1),
+.sms .form__group:nth-child(2) {
+  flex: 0 0 25%;
+}
+@media screen and (max-width: 37.5em) {
+  .sms .form__group {
+    flex: 0 0 100% !important;
+  }
 }
 
 /*# sourceMappingURL=app.css.map */

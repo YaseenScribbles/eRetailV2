@@ -41,7 +41,8 @@ const MobileNav = ({ show, setShowMobileNav }) => {
                 <div className="nav__item" onClick={() => get("/stock")}>
                     Stock
                 </div>
-                {JSON.parse(localStorage.getItem("eRetail_user"))?.has_invoice_report === "1" && (
+                {JSON.parse(localStorage.getItem("eRetail_user"))
+                    ?.has_invoice_report === "1" && (
                     <div className="nav__item" onClick={() => get("/invoice")}>
                         Invoice
                     </div>
@@ -49,7 +50,14 @@ const MobileNav = ({ show, setShowMobileNav }) => {
                 <div className="nav__item" onClick={() => get("/cvs")}>
                     CVS
                 </div>
-                {JSON.parse(localStorage.getItem("eRetail_user"))?.role === "admin" && (
+                {JSON.parse(localStorage.getItem("eRetail_user"))?.role ===
+                    "admin" && (
+                    <div className="nav__item" onClick={() => get("/sms")}>
+                        SMS
+                    </div>
+                )}
+                {JSON.parse(localStorage.getItem("eRetail_user"))?.role ===
+                    "admin" && (
                     <div className="nav__item" onClick={() => get("/users")}>
                         Users
                     </div>

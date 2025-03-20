@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ReceivedController;
 use App\Http\Controllers\SalesController;
+use App\Http\Controllers\SMSController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -52,6 +53,10 @@ Route::middleware('auth')->group(function () {
     Route::put('/users/{user}',[UserController::class,'update'])->name('users.update');
     Route::get('/barcode', [BarcodeController::class, 'index'])->name('barcode');
     Route::post('/barcode-report', [BarcodeController::class, 'report']);
+    Route::get('/sms', [SMSController::class, 'show'])->name('sms.show');
+    Route::post('/sms',[SMSController::class, 'send']);
+    Route::post('/test-sms', [SMSController::class, 'testSms']);
+
 
     Route::get('/buyers', function (Request $request) {
         $f_year = $request->query('f_year');

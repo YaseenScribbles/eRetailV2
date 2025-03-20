@@ -1,0 +1,17 @@
+.sms {
+
+    .form__group:nth-child(1),
+    .form__group:nth-child(2) {
+        flex: 0 0 25%;
+    }
+
+    .form__group {
+
+        @media screen and (max-width: 37.5em) {
+            flex: 0 0 100% !important;
+        }
+    }
+
+
+
+}

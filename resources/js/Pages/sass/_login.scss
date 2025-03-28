@@ -13,7 +13,16 @@
             rgba($color-secondary, 0.2),
             rgba($color-secondary, 0.2)
         ),
-        url("../images/login-bg-1600w.webp");
+        url("../images/login-bg-old.jpg");
+
+    @media screen and (max-width: 100em) {
+        background-image: linear-gradient(
+                to right bottom,
+                rgba($color-secondary, 0.2),
+                rgba($color-secondary, 0.2)
+            ),
+            url("../images/login-bg-1600w.webp");
+    }
 
     @media (max-width: 75em) {
         background-image: linear-gradient(

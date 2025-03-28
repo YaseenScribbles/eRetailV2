@@ -198,7 +198,7 @@
 }
 
 .page {
-  padding: 1rem 3rem;
+  padding: 1rem 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -487,11 +487,11 @@
   position: fixed;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
   justify-content: center;
   align-items: center;
   background-image: linear-gradient(to right bottom, #AAC0AA, #638663);
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: #F2F5F2;
   text-transform: uppercase;
   z-index: 1000;
@@ -738,7 +738,7 @@ body {
 .login {
   height: 100vh;
   width: 100vw;
-  background-image: linear-gradient(to right bottom, rgba(170, 192, 170, 0.2), rgba(170, 192, 170, 0.2)), url("../images/login-bg.jpg");
+  background-image: linear-gradient(to right bottom, rgba(170, 192, 170, 0.2), rgba(170, 192, 170, 0.2)), url("../images/login-bg-1600w.webp");
   background-size: cover;
   background-position: center;
   display: flex;
@@ -752,11 +752,21 @@ body {
     overflow: hidden;
   }
 }
+@media (max-width: 75em) {
+  .login {
+    background-image: linear-gradient(to right bottom, rgba(170, 192, 170, 0.2), rgba(170, 192, 170, 0.2)), url("../images/login-bg-768w.webp");
+  }
+}
+@media (max-width: 37.5em) {
+  .login {
+    background-image: linear-gradient(to right bottom, rgba(170, 192, 170, 0.2), rgba(170, 192, 170, 0.2)), url("../images/login-bg-480w.webp");
+  }
+}
 .login__card {
   background-color: rgba(170, 192, 170, 0.7);
   height: 55vh;
   width: 20vw;
-  padding: 5rem;
+  padding: 5rem 3rem;
   border-radius: 1rem;
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.3);
   display: flex;
@@ -812,6 +822,8 @@ body {
   font-size: 3.5rem;
   letter-spacing: 1px;
   color: rgb(77.330472103, 104.669527897, 77.330472103);
+  margin-block-start: -1rem;
+  padding-block-end: 1rem;
 }
 .login__form {
   display: flex;
@@ -1414,6 +1426,15 @@ body {
 }
 @media screen and (max-width: 37.5em) {
   .sms .form__group {
+    flex: 0 0 100% !important;
+  }
+}
+
+.offer .form__group:nth-child(1) {
+  flex: 0 0 25%;
+}
+@media screen and (max-width: 37.5em) {
+  .offer .form__group {
     flex: 0 0 100% !important;
   }
 }

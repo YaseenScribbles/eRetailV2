@@ -50,6 +50,9 @@ const MobileNav = ({ show, setShowMobileNav }) => {
                 <div className="nav__item" onClick={() => get("/cvs")}>
                     CVS
                 </div>
+                <div className="nav__item" onClick={() => get("/offer")}>
+                    OFFER
+                </div>
                 {JSON.parse(localStorage.getItem("eRetail_user"))?.role ===
                     "admin" && (
                     <div className="nav__item" onClick={() => get("/sms")}>

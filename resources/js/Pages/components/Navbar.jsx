@@ -98,6 +98,17 @@ const Navbar = () => {
                         CVS
                     </a>
                 </li>
+                <li className="nav__item">
+                    <a
+                        href="#"
+                        className={`nav__link ${
+                            url == "/offer" ? "nav__link--active" : ""
+                        }`}
+                        onClick={() => router.get("/offer")}
+                    >
+                        OFFER
+                    </a>
+                </li>
                 {JSON.parse(localStorage.getItem("eRetail_user"))?.role ===
                     "admin" && (
                     <li className="nav__item">

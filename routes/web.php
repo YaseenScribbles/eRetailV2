@@ -5,6 +5,7 @@ use App\Http\Controllers\BarcodeController;
 use App\Http\Controllers\CostVsSaleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\OfferController;
 use App\Http\Controllers\ReceivedController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\SMSController;
@@ -50,12 +51,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/cvs-report', [CostVsSaleController::class, 'report'])->name('cvs.report');
     Route::get('/users', [UserController::class, 'show'])->name('users.show');
     Route::post('/users', [UserController::class, 'store'])->name('users.store');
-    Route::put('/users/{user}',[UserController::class,'update'])->name('users.update');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::get('/barcode', [BarcodeController::class, 'index'])->name('barcode');
     Route::post('/barcode-report', [BarcodeController::class, 'report']);
     Route::get('/sms', [SMSController::class, 'show'])->name('sms.show');
-    Route::post('/sms',[SMSController::class, 'send']);
+    Route::post('/sms', [SMSController::class, 'send']);
     Route::post('/test-sms', [SMSController::class, 'testSms']);
+    Route::get('/offer', [OfferController::class, 'show'])->name('offer.show');
+    Route::post('/offer', [OfferController::class, 'report']);
 
 
     Route::get('/buyers', function (Request $request) {
@@ -72,5 +75,5 @@ Route::middleware('auth')->group(function () {
         return response()->json(['buyers' => $buyersList]);
     });
 
-    Route::get('/stock-summary',[DashboardController::class,'stockSummaryReport']);
+    Route::get('/stock-summary', [DashboardController::class, 'stockSummaryReport']);
 });

@@ -753,21 +753,6 @@ body {
     overflow: hidden;
   }
 }
-@media screen and (max-width: 100em) {
-  .login {
-    background-image: linear-gradient(to right bottom, rgba(170, 192, 170, 0.2), rgba(170, 192, 170, 0.2)), url("../images/login-bg-1600w.webp");
-  }
-}
-@media screen and (max-width: 75em) {
-  .login {
-    background-image: linear-gradient(to right bottom, rgba(170, 192, 170, 0.2), rgba(170, 192, 170, 0.2)), url("../images/login-bg-768w.webp");
-  }
-}
-@media screen and (max-width: 37.5em) {
-  .login {
-    background-image: linear-gradient(to right bottom, rgba(170, 192, 170, 0.2), rgba(170, 192, 170, 0.2)), url("../images/login-bg-480w.webp");
-  }
-}
 .login__card {
   background-color: rgba(170, 192, 170, 0.7);
   height: 55vh;

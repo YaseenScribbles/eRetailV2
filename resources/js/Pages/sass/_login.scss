@@ -13,7 +13,7 @@
             rgba($color-secondary, 0.2),
             rgba($color-secondary, 0.2)
         ),
-        url("../images/login-bg-old.jpg");
+        url("/images/login-bg-old.jpg");
 
     @media screen and (max-width: 100em) {
         background-image: linear-gradient(
@@ -21,30 +21,31 @@
                 rgba($color-secondary, 0.2),
                 rgba($color-secondary, 0.2)
             ),
-            url("../images/login-bg-1600w.webp");
+            url("/images/login-bg-1600w.webp");
     }
 
-    @media (max-width: 75em) {
+    @media screen and (max-width: 75em) {
         background-image: linear-gradient(
                 to right bottom,
                 rgba($color-secondary, 0.2),
                 rgba($color-secondary, 0.2)
             ),
-            url("../images/login-bg-768w.webp");
+            url("/images/login-bg-768w.webp");
     }
 
-    @media (max-width: 37.5em) {
+    @media screen and (max-width: 37.5em) {
         background-image: linear-gradient(
                 to right bottom,
                 rgba($color-secondary, 0.2),
                 rgba($color-secondary, 0.2)
             ),
-            url("../images/login-bg-480w.webp");
+            url("/images/login-bg-480w.webp");
     }
 
     // background-image: url("../images/login-bg.jpg");
     background-size: cover;
     background-position: center;
+    background-attachment: fixed;
     display: flex;
     justify-content: center;
     align-items: center;

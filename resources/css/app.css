@@ -738,7 +738,7 @@ body {
 .login {
   height: 100vh;
   width: 100vw;
-  background-image: linear-gradient(to right bottom, rgba(170, 192, 170, 0.2), rgba(170, 192, 170, 0.2)), url("/images/login-bg-old.jpg");
+  background-image: linear-gradient(to right bottom, rgba(170, 192, 170, 0.2), rgba(170, 192, 170, 0.2)), url("/storage/images/login-bg-old.jpg");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -755,17 +755,17 @@ body {
 }
 @media screen and (max-width: 100em) {
   .login {
-    background-image: linear-gradient(to right bottom, rgba(170, 192, 170, 0.2), rgba(170, 192, 170, 0.2)), url("/images/login-bg-1600w.webp");
+    background-image: linear-gradient(to right bottom, rgba(170, 192, 170, 0.2), rgba(170, 192, 170, 0.2)), url("/storage/images/login-bg-1600w.webp");
   }
 }
 @media screen and (max-width: 75em) {
   .login {
-    background-image: linear-gradient(to right bottom, rgba(170, 192, 170, 0.2), rgba(170, 192, 170, 0.2)), url("/images/login-bg-768w.webp");
+    background-image: linear-gradient(to right bottom, rgba(170, 192, 170, 0.2), rgba(170, 192, 170, 0.2)), url("/storage/images/login-bg-768w.webp");
   }
 }
 @media screen and (max-width: 37.5em) {
   .login {
-    background-image: linear-gradient(to right bottom, rgba(170, 192, 170, 0.2), rgba(170, 192, 170, 0.2)), url("/images/login-bg-480w.webp");
+    background-image: linear-gradient(to right bottom, rgba(170, 192, 170, 0.2), rgba(170, 192, 170, 0.2)), url("/storage/images/login-bg-480w.webp");
   }
 }
 .login__card {

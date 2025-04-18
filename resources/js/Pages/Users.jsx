@@ -154,7 +154,7 @@ const Users = (props) => {
         );
         setSelectedShops(selectedShops);
 
-        const selectedBuyerValues = data.buyer_id.split(","); // Create an array of shop values from data.shops
+        const selectedBuyerValues = data.buyer_id ? data.buyer_id.split(",") : ""; // Create an array of shop values from data.shops
 
         const selectedBuyers = buyers.filter((buyer) =>
             selectedBuyerValues.includes(buyer.value)
@@ -214,10 +214,11 @@ const Users = (props) => {
             addError("Please select the shops");
             isValid = false;
         }
-        if (data.buyer_id === "") {
-            addError("Please select the buyers");
-            isValid = false;
-        }
+        //Buyer is not required for all users
+        // if (data.buyer_id === "") {
+        //     addError("Please select the buyers");
+        //     isValid = false;
+        // }
         if (data.sale_report === "") {
             addError("Please select the sale report");
             isValid = false;
@@ -254,10 +255,11 @@ const Users = (props) => {
             addError("Please select the shops");
             isValid = false;
         }
-        if (data.buyer_id === "") {
-            addError("Please select the buyers");
-            isValid = false;
-        }
+        //Buyer is not required for all users
+        // if (data.buyer_id === "") {
+        //     addError("Please select the buyers");
+        //     isValid = false;
+        // }
         if (data.sale_report === "") {
             addError("Please select the sale report");
             isValid = false;

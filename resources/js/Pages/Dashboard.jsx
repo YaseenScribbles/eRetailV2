@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Navbar from "./components/Navbar";
 import { DateRangePicker } from "react-date-range";
 import CaptionHeadBody from "./components/CaptionHeadBody";
@@ -39,6 +39,35 @@ const Dashboard = (props) => {
     });
     const [showMobileNav, setShowMobileNav] = useState(false);
     const [stockSummaryLoading, setStockSummaryLoading] = useState(true);
+
+    //for dragging menu
+    const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
+    const dragging = useRef(false);
+    const offset = useRef({ x: 0, y: 0 });
+
+    const handleTouchStart = (e) => {
+        dragging.current = true;
+        const touch = e.touches[0];
+        offset.current = {
+            x: touch.clientX - dragPosition.x,
+            y: touch.clientY - dragPosition.y,
+        };
+    };
+
+    const handleTouchMove = (e) => {
+        if (!dragging.current) return;
+        const touch = e.touches[0];
+        const newX = touch.clientX - offset.current.x;
+        const newY = touch.clientY - offset.current.y;
+        setDragPosition({
+            x: newX,
+            y: newY,
+        });
+    };
+
+    const handleTouchEnd = () => {
+        dragging.current = false;
+    };
 
     useEffect(() => {
         if (props.shopwiseSales.length > 0) {
@@ -158,7 +187,14 @@ const Dashboard = (props) => {
             ></div>
             <div
                 className="mobile-nav__btn"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
                 onClick={() => setShowMobileNav(true)}
+                style={{
+                    transform: `translate(${dragPosition.x}px, ${dragPosition.y}px)`,
+                    touchAction: 'none',
+                 }}
             >
                 <svg className="mobile-nav__icon">
                     <use xlinkHref="/images/sprite.svg#icon-menu"></use>
@@ -334,7 +370,11 @@ const Dashboard = (props) => {
 
                 {stockSummaryLoading ? (
                     <div className="cell stock">
-                    <p>Stock summary loading<span>.</span><span>.</span><span>.</span></p>
+                        <p>
+                            Stock summary loading<span>.</span>
+                            <span>.</span>
+                            <span>.</span>
+                        </p>
                     </div>
                 ) : (
                     <div className="cell cell-6">

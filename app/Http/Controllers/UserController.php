@@ -27,7 +27,7 @@ class UserController extends Controller
             'mobile' => 'nullable|min:10|max:10|unique:web_users,mobile',
             'role' => 'required|string',
             'shops' => 'required|string',
-            'buyer_id' => 'required|string',
+            'buyer_id' => 'nullable|string',
             'sale_report' => 'required|string',
             'has_invoice_report' => 'boolean',
         ]);
@@ -45,7 +45,7 @@ class UserController extends Controller
             'mobile' => 'nullable|min:10|max:10|unique:web_users,mobile,' . $user->id,
             'role' => 'required|string',
             'shops' => 'required|string',
-            'buyer_id' => 'required|string',
+            'buyer_id' => 'nullable|string',
             'sale_report' => 'required|string',
             'has_invoice_report' => 'boolean',
         ]);

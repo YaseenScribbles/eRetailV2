@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Agdasima:wght@400;700&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 .btn {
   border: 1px solid transparent;
@@ -8,6 +7,7 @@
   border-radius: 0.4rem;
   font-size: 1.7rem;
   font-weight: 500;
+  font-family: inherit;
   text-transform: uppercase;
   box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.1);
   background-color: #638663;
@@ -41,7 +41,9 @@
   background-color: #AAC0AA;
 }
 .btn--login {
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  background-color: color-mix(in srgb, #638663 95%, #F2F5F2 5%);
+  border-radius: 3rem;
+  box-shadow: 0.5rem 1rem 1.5rem rgba(0, 0, 0, 0.1);
 }
 .btn:disabled {
   color: #999;
@@ -738,6 +740,7 @@ body {
 .login {
   height: 100vh;
   width: 100vw;
+  transition: all 0.2s ease-in;
   background-image: linear-gradient(to right bottom, rgba(170, 192, 170, 0.2), rgba(170, 192, 170, 0.2)), url("../images/login-bg-old.jpg");
   background-size: cover;
   background-position: center;
@@ -806,15 +809,44 @@ body {
   height: 5rem;
   width: 5rem;
   fill: rgb(77.330472103, 104.669527897, 77.330472103);
+  stroke: rgb(77.330472103, 104.669527897, 77.330472103);
+  stroke-width: 0.5;
+}
+.login .app-logo path {
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  animation: draw 2s ease forwards;
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 .login .app-name {
   font-family: "Agdasima", sans-serif;
-  font-weight: 400;
+  font-weight: 700;
   font-size: 3.5rem;
   letter-spacing: 1px;
   color: rgb(77.330472103, 104.669527897, 77.330472103);
   margin-block-start: -1rem;
   padding-block-end: 1rem;
+  transition: all 1s;
+}
+.login .app-name span {
+  opacity: 0;
+  display: inline-block;
+  animation: oneByOne 1s ease-out forwards;
+  animation-delay: calc(var(--order) * 142ms);
+}
+@keyframes oneByOne {
+  from {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .login__form {
   display: flex;
@@ -1100,6 +1132,12 @@ body {
   width: 100%;
   height: 100%;
 }
+@media screen and (min-width: 80em) {
+  .grid-container .cell {
+    max-height: 45rem;
+    overflow: auto;
+  }
+}
 .grid-container .cell.stock {
   background-color: #fff;
   display: flex;
@@ -1132,7 +1170,6 @@ body {
 .grid-container .cell.chart {
   display: flex;
   flex-direction: column;
-  height: 45rem;
 }
 .grid-container .cell.chart label {
   display: block;

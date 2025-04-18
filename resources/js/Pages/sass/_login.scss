@@ -1,6 +1,7 @@
 .login {
     height: 100vh;
     width: 100vw;
+    transition: all 0.2s ease-in;
 
     @media screen and (max-width: 28em) {
         max-height: 100dvh;
@@ -99,16 +100,48 @@
         height: 5rem;
         width: 5rem;
         fill: darken($color-primary, 10%);
+        stroke: darken($color-primary, 10%);
+        stroke-width: 0.5;
+        path {
+            stroke-dasharray: 300;
+            stroke-dashoffset: 300;
+            animation: draw 2s ease forwards;
+        }
+        @keyframes draw {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
     }
 
     .app-name {
         font-family: "Agdasima", sans-serif;
-        font-weight: 400;
+        font-weight: 700;
         font-size: 3.5rem;
         letter-spacing: 1px;
         color: darken($color-primary, 10%);
         margin-block-start: -1rem;
         padding-block-end: 1rem;
+        transition: all 1s;
+
+        span {
+            opacity: 0;
+            display: inline-block;
+            animation: oneByOne 1s ease-out forwards;
+            animation-delay: calc(var(--order) * 142ms);
+        }
+    }
+
+    @keyframes oneByOne {
+        from {
+            opacity: 0;
+            transform: translateY(-1rem);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     &__form {

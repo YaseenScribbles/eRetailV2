@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .grid-container {
     min-height: 100vh;
     width: 100%;
@@ -122,6 +124,7 @@
         &.chart {
             display: flex;
             flex-direction: column;
+            height: 45rem;
 
             label {
                 display: block;
@@ -182,7 +185,7 @@
                     span {
                         display: inline-block;
                         padding: 1rem 2rem;
-                        background-color: lighten(lightgray, 15%);
+                        background-color: color.adjust(lightgray, $lightness:15%);
                     }
                 }
             }

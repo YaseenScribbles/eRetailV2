@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class SalesController extends Controller
@@ -49,7 +49,7 @@ class SalesController extends Controller
         }
 
         if ($data['report'] == "summary") {
-            $sql = "SELECT BM.BillNo bill_no,BM.BillDt bill_date,BM.TotQty total_qty,BM.TotAmt + BM.DisAmt total_amount,
+            $sql = "SELECT BM.BillId bill_id,BM.BillNo bill_no,BM.BillDt bill_date,BM.TotQty total_qty,BM.TotAmt + BM.DisAmt total_amount,
             BM.DisAmt disc_amount,BM.TotAmt final_amount,C.CustomerName customer
             FROM BillMaster BM
             INNER JOIN Customers C ON C.CustomerID = BM.CustomerID";
@@ -142,5 +142,104 @@ class SalesController extends Controller
         session(['sales_report_result' => $result]);
 
         return redirect()->route('sales');
+    }
+
+    public function delete(Request $request)
+    {
+        $request->validate([
+            'bill_id' => 'required|exists:billmaster,billid',
+            'shop_id' => 'required|exists:shops,shopid'
+        ]);
+
+        try {
+            //code...
+            DB::beginTransaction();
+            DB::statement("exec sp_InsertIntoDeletedTables ?,?", [$request->bill_id, $request->shop_id]);
+            DB::statement("exec sp_DeleteBillById ?,?", [$request->bill_id, $request->shop_id]);
+            DB::commit();
+            return back()->with('message', 'Bill removed');
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            return back()->with('message', $th->getMessage());
+        }
+    }
+
+    public function oldPayment(Request $request)
+    {
+        $request->validate([
+            'bill_id' => 'required|exists:billmaster,billid',
+            'shop_id' => 'required|exists:shops,shopid'
+        ]);
+
+        $oldPayment = DB::select("
+        SELECT
+            SUM(CASE WHEN PaymentDesc = 'CASH' THEN Paid - Refund ELSE 0 END) AS CASH,
+            SUM(CASE WHEN PaymentDesc = 'CARD' THEN Paid ELSE 0 END) AS CARD,
+            SUM(CASE WHEN PaymentDesc = 'UPI' THEN Paid ELSE 0 END) AS UPI
+        FROM BillPayments
+        WHERE BillID = ? AND ShopID = ?", [$request->bill_id, $request->shop_id]);
+
+        return response()->json([
+            'oldPayment' => $oldPayment[0] ?? ['CASH' => 0, 'CARD' => 0, 'UPI' => 0]
+        ]);
+    }
+
+    public function paymentUpdate(Request $request)
+    {
+        $request->validate([
+            'bill_id' => 'required|exists:billmaster,billid',
+            'shop_id' => 'required|exists:shops,shopid',
+            'payment' => 'required|array',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $old = DB::table('BillPayments')
+                ->where('BillID', $request->bill_id)
+                ->where('ShopID', $request->shop_id)
+                ->select('TermId', 'BillDt')
+                ->first();
+
+            DB::table('BillPayments')
+                ->where('BillID', $request->bill_id)
+                ->where('ShopID', $request->shop_id)
+                ->delete();
+
+            $sNo = 1;
+
+            foreach ($request->payment as $mode => $amount) {
+                if (empty($amount)) continue;
+
+                $paymentId = match ($mode) {
+                    'cash' => '1',
+                    'card' => '2',
+                    'upi' => '3',
+                };
+
+                DB::table('BillPayments')->insert([
+                    'BillID'       => $request->bill_id,
+                    'ShopID'       => $request->shop_id,
+                    'PaymentID'    => $paymentId,
+                    'PaymentDesc'  => strtoupper($mode),
+                    'Paid'         => $amount,
+                    'Refund'       => 0,
+                    'RefNo'        => auth()->user()->name,
+                    'RefDt'        => now(),
+                    'Sno'          => $sNo++,
+                    'TermID'       => $old->TermId ?? 1,
+                    'BillDt'       => $old->BillDt ?? now(),
+                    'IsUpdated'    => 0,
+                    'WHID'         => 1,
+                ]);
+            }
+
+            DB::commit();
+            return back()->with('message', 'Payment updated successfully');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return back()->with('error', 'Update failed: ' . $th->getMessage());
+        }
     }
 }

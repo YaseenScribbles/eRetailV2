@@ -17,7 +17,7 @@ html {
     box-sizing: border-box;
 
     //86 em is for 1366
-    @media screen and (max-width: 86em) {
+    @media screen and (max-width:86em) {
         font-size: 50%;
     }
 }

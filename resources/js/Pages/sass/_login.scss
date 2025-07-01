@@ -1,55 +1,29 @@
+@use "sass:color";
+
 .login {
     height: 100vh;
     width: 100vw;
     transition: all 0.2s ease-in;
 
-    @media screen and (max-width: 28em) {
-        max-height: 100dvh;
-        max-width: 100dvw;
-        overflow: hidden;
-    }
-
     background-image: linear-gradient(
-            to right bottom,
-            rgba($color-secondary, 0.2),
-            rgba($color-secondary, 0.2)
-        ),
-        url("../images/login-bg-old.jpg");
+        to right bottom,
+        rgba($color-secondary, 0.2),
+        rgba($color-secondary, 0.2)
+    ),
+    url("../images/login-bg-old.jpg");
 
-    // @media screen and (max-width: 100em) {
-    //     background-image: linear-gradient(
-    //             to right bottom,
-    //             rgba($color-secondary, 0.2),
-    //             rgba($color-secondary, 0.2)
-    //         ),
-    //         url("../images/login-bg-1600w.webp");
-    // }
-
-    // @media screen and (max-width: 75em) {
-    //     background-image: linear-gradient(
-    //             to right bottom,
-    //             rgba($color-secondary, 0.2),
-    //             rgba($color-secondary, 0.2)
-    //         ),
-    //         url("../images/login-bg-768w.webp");
-    // }
-
-    // @media screen and (max-width: 37.5em) {
-    //     background-image: linear-gradient(
-    //             to right bottom,
-    //             rgba($color-secondary, 0.2),
-    //             rgba($color-secondary, 0.2)
-    //         ),
-    //         url("../images/login-bg-480w.webp");
-    // }
-
-    // background-image: url("../images/login-bg.jpg");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
     display: flex;
     justify-content: center;
     align-items: center;
+
+    @media screen and (max-width: 28em) {
+        max-height: 100dvh;
+        max-width: 100dvw;
+        overflow: hidden;
+    }
 
     &__card {
         background-color: rgba($color-secondary, 0.7);
@@ -58,6 +32,11 @@
         padding: 5rem 3rem;
         border-radius: 1rem;
         box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
 
         @media screen and (max-width: 93.75em) {
             height: 55vh;
@@ -88,19 +67,13 @@
             width: 80%;
             height: 65%;
         }
-
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 1.5rem;
     }
 
     .app-logo {
         height: 5rem;
         width: 5rem;
-        fill: darken($color-primary, 10%);
-        stroke: darken($color-primary, 10%);
+        fill: color.adjust($color-primary, $lightness:-10%);
+        stroke: color.adjust($color-primary,$lightness:-10%);
         stroke-width: 0.5;
         path {
             stroke-dasharray: 300;
@@ -119,7 +92,7 @@
         font-weight: 700;
         font-size: 3.5rem;
         letter-spacing: 1px;
-        color: darken($color-primary, 10%);
+        color: color.adjust($color-primary, $lightness:-10%);
         margin-block-start: -1rem;
         padding-block-end: 1rem;
         transition: all 1s;
@@ -191,7 +164,7 @@
 // }
 
 .error-msg {
-    color: darken($color-primary, 25%);
+    color: color.adjust($color-primary, $lightness:-25%);
     display: block;
     text-align: center;
     text-transform: uppercase;

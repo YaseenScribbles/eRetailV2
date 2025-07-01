@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .users {
     .form__group {
         &:nth-child(1),
@@ -29,7 +31,7 @@
             gap: 1rem;
             align-items: center;
             flex: 0 0 10%;
-            color: darken($color-primary,10%);
+            color: color.adjust($color-primary,$lightness:-10%);
 
             label {
                 display: flex;
@@ -123,7 +125,7 @@
     .edit {
         font-size: 1.5rem;
         padding: 0.25rem .5rem;
-        background-color: darken($color: $color-primary, $amount: 10);
+        background-color: color.adjust($color: $color-primary, $lightness:-10%);
         color: $color-white;
         border-radius: 0.4rem;
         opacity: 0;

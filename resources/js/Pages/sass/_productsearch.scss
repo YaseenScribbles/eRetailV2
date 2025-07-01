@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .p-s-g {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(35rem, 50rem));
@@ -169,7 +171,7 @@
             }
 
             thead {
-                background-color: lighten($color-primary, 10%);
+                background-color: color.adjust($color-primary, $lightness:10%);
                 color: #fff;
                 text-align: left;
 
@@ -206,7 +208,7 @@
             }
 
             tfoot {
-                background-color: lighten($color-primary, 10%);
+                background-color: color.adjust($color-primary, $lightness:10%);
                 color: #fff;
                 text-align: end;
                 font-weight: 600;

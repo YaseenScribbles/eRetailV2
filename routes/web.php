@@ -76,4 +76,13 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/stock-summary', [DashboardController::class, 'stockSummaryReport']);
+
+    //bill deletion
+    Route::post('/bill-delete', [SalesController::class, 'delete']);
+
+    //old payment
+    Route::get('/payment-old', [SalesController::class, 'oldPayment']);
+
+    //Payment update
+    Route::post('/payment', [SalesController::class, 'paymentUpdate']);
 });

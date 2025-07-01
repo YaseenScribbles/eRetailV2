@@ -1,5 +1,5 @@
 import Navbar from "./components/Navbar";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import ReactSelect from "react-select";
 import { DateRangePicker } from "react-date-range";
@@ -20,6 +20,9 @@ import {
 import Grid from "./components/Grid";
 import Toast from "./components/Toast";
 import MobileNav from "./components/MobileNav";
+import AlertModal from "./components/AlertModal";
+import PaymentModal from "./components/PaymentModal";
+import axios from "axios";
 
 const reportOptions = [
     {
@@ -40,7 +43,7 @@ const columnHelper = createColumnHelper();
 
 const Sales = (props) => {
     const [shops, setShops] = useState([]);
-    const { data, setData, processing, progress, post } = useForm({
+    const { data, setData, processing, post } = useForm({
         report: undefined,
         shop_id: undefined,
         start_date: format(new Date(), "yyyy-MM-dd"),
@@ -54,6 +57,9 @@ const Sales = (props) => {
     });
     const [tableData, setTableData] = useState([]);
     const [reportStyle, setReportStyle] = useState("summary");
+    const [role] = useState(
+        JSON.parse(localStorage.getItem("eRetail_user")).role
+    );
     const summaryColumns = [
         columnHelper.accessor("bill_no", {
             header: "Bill No",
@@ -162,6 +168,44 @@ const Sales = (props) => {
             cell: (info) => info.getValue(),
             footer: "",
         }),
+        ...(role === "admin"
+            ? [columnHelper.accessor("actions", {
+                  header: "Actions",
+                  cell: ({ row }) => {
+                      return (
+                          <div className="d-flex">
+                              <svg
+                                  className="payment-icon"
+                                  onClick={async () => {
+                                      setLoading(true);
+                                      const {
+                                          data: { oldPayment },
+                                      } = await axios.get(
+                                          `/payment-old?bill_id=${row.original.bill_id}&shop_id=${data.shop_id}`
+                                      );
+                                      setPayment(oldPayment);
+                                      setPaymentId(row.original.bill_id);
+                                      setShowPayment(true);
+                                      setLoading(false);
+                                  }}
+                              >
+                                  <use xlinkHref="/images/sprite.svg#icon-inr"></use>
+                              </svg>
+                              <svg
+                                  className="delete-icon"
+                                  onClick={() => {
+                                      setDeleteId(row.original.bill_id);
+                                      setShowAlert(true);
+                                  }}
+                              >
+                                  <use xlinkHref="/images/sprite.svg#icon-circle-with-cross"></use>
+                              </svg>
+                          </div>
+                      );
+                  },
+                  enableSorting: false,
+              })]
+            : []),
     ];
     const detailColumns = [
         columnHelper.accessor("bill_no", {
@@ -474,6 +518,12 @@ const Sales = (props) => {
     const [showRange, setShowRange] = useState(false);
     const [errors, setErrors] = useState([]);
     const [showMobileNav, setShowMobileNav] = useState(false);
+    const [showAlert, setShowAlert] = useState(false);
+    const [deleteId, setDeleteId] = useState(null);
+    const [showPayment, setShowPayment] = useState(false);
+    const [payment, setPayment] = useState(null);
+    const [paymentId, setPaymentId] = useState(null);
+    const [loading, setLoading] = useState(false);
     // const [rowData, setRowData] = useState([]);
     // const defaultColDef = useMemo(() => {
     //     return {
@@ -504,6 +554,107 @@ const Sales = (props) => {
             preserveScroll: true,
             preserveState: true,
         });
+    };
+
+    const deleteBill = (setIsSubmitting) => {
+        if (!deleteId) {
+            setErrors((prev) => [...prev, "Bill not selected"]);
+            return;
+        }
+        if (!data.shop_id) {
+            setErrors((prev) => [...prev, "Shop not selected"]);
+            return;
+        }
+        setIsSubmitting(true);
+        router.post(
+            "/bill-delete",
+            {
+                bill_id: deleteId,
+                shop_id: data.shop_id,
+            },
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: (page) => {
+                    post("/sales-report", {
+                        preserveScroll: true,
+                        preserveState: true,
+                    });
+                    setDeleteId(null);
+                    setErrors([page.props.message]);
+                    setShowAlert(false);
+                    setIsSubmitting(false);
+                },
+                onError: (errors) => {
+                    {
+                        let newErrors = errors
+                            ? Object.values(errors)
+                            : ["An error occuurred"];
+                        setErrors(newErrors);
+                        setShowAlert(false);
+                        setIsSubmitting(false);
+                    }
+                },
+            }
+        );
+    };
+
+    const updateBill = (newData, setIsSubmitting) => {
+        const oldTotal = Object.values(payment).reduce(
+            (acc, curr) => acc + +curr,
+            0
+        );
+        const newTotal = Object.values(newData).reduce(
+            (acc, curr) => acc + +curr,
+            0
+        );
+        if (+newTotal != +oldTotal) {
+            setErrors(["Current total is not matching with previous one"]);
+            setIsSubmitting(false);
+            return;
+        }
+        if (!paymentId) {
+            setErrors(["Bill not selected"]);
+            setIsSubmitting(false);
+            return;
+        }
+        if (!data.shop_id) {
+            setErrors(["Shop not selected"]);
+            setIsSubmitting(false);
+            return;
+        }
+        router.post(
+            "payment",
+            {
+                bill_id: paymentId,
+                shop_id: data.shop_id,
+                payment: newData,
+            },
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: (page) => {
+                    post("/sales-report", {
+                        preserveScroll: true,
+                        preserveState: true,
+                    });
+                    setPaymentId(null);
+                    setPayment(null);
+                    setIsSubmitting(false);
+                    setShowPayment(false);
+                    setErrors([page.props.message]);
+                },
+                onError: (errors) => {
+                    {
+                        let newErrors = errors
+                            ? Object.values(errors)
+                            : ["An error occuurred"];
+                        setErrors(newErrors);
+                        setIsSubmitting(false);
+                    }
+                },
+            }
+        );
     };
 
     useEffect(() => {
@@ -605,7 +756,9 @@ const Sales = (props) => {
             />
             <div className="sales page">
                 <div
-                    className={`page__loader ${processing ? "loading" : ""}`}
+                    className={`page__loader ${
+                        processing || loading ? "loading" : ""
+                    }`}
                 ></div>
                 <div className="page__title">
                     <h3>Sales Report</h3>
@@ -703,6 +856,29 @@ const Sales = (props) => {
                     }
                 />
                 <Toast errors={errors} />
+                <AlertModal
+                    show={showAlert}
+                    onYes={(setIsSubmitting) => {
+                        deleteBill(setIsSubmitting);
+                    }}
+                    onNo={() => {
+                        setDeleteId(null);
+                        setShowAlert(false);
+                    }}
+                    isProcessingRequired={true}
+                />
+                <PaymentModal
+                    show={showPayment}
+                    payment={payment}
+                    onYes={(newData, setIsSubmitting) =>
+                        updateBill(newData, setIsSubmitting)
+                    }
+                    onNo={() => {
+                        setPayment(null);
+                        setPaymentId(null);
+                        setShowPayment(false);
+                    }}
+                />
             </div>
         </>
     );

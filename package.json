@@ -4,11 +4,13 @@
     "scripts": {
         "dev": "vite --host=192.168.10.65",
         "build": "vite build",
-        "watch:sass": "sass --watch resources/js/Pages/main.scss resources/css/app.css"
+        "watch:sass": "sass --watch resources/js/Pages/main.scss resources/css/app.css",
+        "start": "concurrently \"php artisan serve --host=192.168.10.65\" \"npm run dev\" \"npm run watch:sass\""
     },
     "devDependencies": {
         "@vitejs/plugin-react": "^4.3.2",
         "axios": "^1.6.4",
+        "concurrently": "^9.2.0",
         "laravel-vite-plugin": "^1.0.5",
         "vite": "^5.4.9"
     },

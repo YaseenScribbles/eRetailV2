@@ -111,6 +111,11 @@ const detailColumns = [
         header: "Description",
         footer: "",
     }),
+    columnHelper.accessor("size", {
+        cell: (info) => info.getValue(),
+        header: "Size",
+        footer: "",
+    }),
     columnHelper.accessor("stock", {
         cell: (info) => {
             return (

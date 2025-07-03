@@ -53,7 +53,7 @@ class StockController extends Controller
         if ($data['report'] == "details") {
 
             $sql = "SELECT LEFT(A.Department,DATALENGTH(A.Department) - 4 ) + '-' + A.Category product,
-            P.Plucode barcode,P.Pluname + '-' + P.Id description,ST.stock stock,PM.CostPrice cp,PM.RetailPrice rp,SUM(ST.stock * PM.CostPrice) totcp,
+            P.Plucode barcode,P.Pluname description,P.Id size,ST.stock stock,PM.CostPrice cp,PM.RetailPrice rp,SUM(ST.stock * PM.CostPrice) totcp,
             SUM(ST.stock * PM.RetailPrice) totrp, COALESCE(D.[Days], 0) [days]
             FROM V_STOCKPOS ST
             INNER JOIN PriceMaster PM ON PM.PluId = ST.PluID AND PM.ShopId = {$data['shop_id']} AND ST.stock > 0

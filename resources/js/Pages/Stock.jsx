@@ -168,7 +168,9 @@ const detailColumns = [
                 .getFilteredRowModel()
                 .rows.reduce((acc, curr) => acc + +curr.getValue("totcp"), 0);
             return (
-                <span style={{ display: "block", textAlign: "end" }}>{cp.toFixed(2)}</span>
+                <span style={{ display: "block", textAlign: "end" }}>
+                    {cp.toFixed(2)}
+                </span>
             );
         },
     }),
@@ -186,17 +188,23 @@ const detailColumns = [
                 .getFilteredRowModel()
                 .rows.reduce((acc, curr) => acc + +curr.getValue("totrp"), 0);
             return (
-                <span style={{ display: "block", textAlign: "end" }}>{rp.toFixed(2)}</span>
+                <span style={{ display: "block", textAlign: "end" }}>
+                    {rp.toFixed(2)}
+                </span>
             );
         },
     }),
+    columnHelper.accessor("days", {
+        cell: (info) => info.getValue(),
+        header: "Days",
+        footer: "",
+    }),
 ];
-
 
 const Stock = (props) => {
     const [shops, setShops] = useState([]);
     const [errors, setErrors] = useState([]);
-    const { data, setData, processing, progress, post } = useForm({
+    const { data, setData, processing, post } = useForm({
         report: undefined,
         shop_id: undefined,
     });
@@ -209,7 +217,6 @@ const Stock = (props) => {
     });
     const [reportStyle, setReportStyle] = useState("");
     const [showMobileNav, setShowMobileNav] = useState(false);
-
 
     const table = useReactTable({
         data: tableData,
@@ -278,7 +285,6 @@ const Stock = (props) => {
                 rp: (+e.rp).toFixed(2),
                 totcp: (+e.totcp).toFixed(2),
                 totrp: (+e.totrp).toFixed(2),
-
             }));
 
             setTableData(data);
@@ -379,7 +385,13 @@ const Stock = (props) => {
                     </div>
                 </form>
                 {tableData.length > 0 && (
-                    <Grid globalFilter={globalFilter}  setGlobalFilter={setGlobalFilter} table={table} tableData={tableData} reportName="Stock Report" />
+                    <Grid
+                        globalFilter={globalFilter}
+                        setGlobalFilter={setGlobalFilter}
+                        table={table}
+                        tableData={tableData}
+                        reportName="Stock Report"
+                    />
                 )}
                 <Toast errors={errors} />
             </div>

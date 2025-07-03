@@ -54,9 +54,9 @@ class StockController extends Controller
 
             $sql = "SELECT LEFT(A.Department,DATALENGTH(A.Department) - 4 ) + '-' + A.Category product,
             P.Plucode barcode,P.Pluname + '-' + P.Id description,ST.stock stock,PM.CostPrice cp,PM.RetailPrice rp,SUM(ST.stock * PM.CostPrice) totcp,
-            SUM(ST.stock * PM.RetailPrice) totrp
+            SUM(ST.stock * PM.RetailPrice) totrp, COALESCE(D.[Days], 0) [days]
             FROM V_STOCKPOS ST
-            INNER JOIN PriceMaster PM ON PM.PluId = ST.PluID AND PM.ShopId = {$data['shop_id']}
+            INNER JOIN PriceMaster PM ON PM.PluId = ST.PluID AND PM.ShopId = {$data['shop_id']} AND ST.stock > 0
             INNER JOIN SHOPS S ON S.ShopID = ST.location_id";
 
             if ($data['shop_id'] > 0) {
@@ -65,7 +65,8 @@ class StockController extends Controller
 
             $sql .= " INNER JOIN PRODUCTMASTER P ON P.PluID = ST.pluid
             INNER JOIN ProductAttributes A ON A.PluId = P.PluID
-            GROUP BY A.Department,A.Category,P.Plucode,ST.Stock,PM.CostPrice,PM.RetailPrice,P.Pluname,P.Id";
+            LEFT JOIN DueDays D ON ST.location_id = D.ShopId AND ST.PluId = D.PLuId
+            GROUP BY A.Department,A.Category,P.Plucode,ST.Stock,PM.CostPrice,PM.RetailPrice,P.Pluname,P.Id,D.[Days]";
 
             $result = DB::select($sql);
             session(['report_style' => 'details']);

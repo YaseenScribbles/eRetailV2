@@ -448,7 +448,8 @@
 }
 
 .delete-icon,
-.payment-icon {
+.payment-icon,
+.date-icon {
   cursor: pointer;
   height: 2.5rem;
   width: 2.5rem;
@@ -661,6 +662,9 @@
   overflow: hidden;
   transition: all 0.25s;
 }
+.modal.date {
+  overflow: visible;
+}
 @starting-style {
   .modal {
     opacity: 0;
@@ -698,6 +702,29 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
+}
+.modal .modal__body .form .date-input {
+  flex-grow: 1;
+}
+.modal .modal__body .form .date-input .react-date-picker {
+  height: 5rem;
+  width: 100%;
+  font-size: 1.5rem;
+  background-color: #fff;
+}
+.modal .modal__body .form .date-input .react-date-picker__calendar-button svg {
+  stroke: #638663;
+}
+.modal .modal__body .form .date-input .react-date-picker__calendar {
+  width: 31rem;
+}
+.modal .modal__body .form .date-input .react-date-picker__calendar .react-calendar__tile--active {
+  background: #638663;
+}
+.modal .modal__body .form .date-input .react-date-picker__wrapper {
+  border: thin solid hsl(0, 0%, 80%);
+  border-radius: 4px;
+  padding: 1rem;
 }
 .modal .modal__body .form .input {
   border: 3px solid transparent;

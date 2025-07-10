@@ -85,4 +85,7 @@ Route::middleware('auth')->group(function () {
 
     //Payment update
     Route::post('/payment', [SalesController::class, 'paymentUpdate']);
+
+    //Bill date update
+    Route::post("/billdate", [SalesController::class, 'updateBillDate']);
 });

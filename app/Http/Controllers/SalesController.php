@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -239,7 +239,27 @@ class SalesController extends Controller
             return back()->with('message', 'Payment updated successfully');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return back()->with('error', 'Update failed: ' . $th->getMessage());
+            return back()->with('message', 'Update failed: ' . $th->getMessage());
+        }
+    }
+
+    public function updateBillDate(Request $request)
+    {
+        $request->validate([
+            'bill_id' => 'required|exists:billmaster,billid',
+            'date' => 'required|date_format:d/m/Y'
+        ]);
+
+        try {
+            DB::beginTransaction();
+            $formattedDate = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d');
+            $currentTime = Carbon::now()->format('H:i:s');
+            DB::statement("EXEC sp_UpdateBillDate ?,?,?", [$request->bill_id, $formattedDate, $currentTime]);
+            DB::commit();
+            return response()->json(['message' => 'Bill date updated']);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json(['message' => 'An error occurred while updating:' . $th->getMessage()], 500);
         }
     }
 }

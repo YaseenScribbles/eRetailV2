@@ -23,6 +23,7 @@ import MobileNav from "./components/MobileNav";
 import AlertModal from "./components/AlertModal";
 import PaymentModal from "./components/PaymentModal";
 import axios from "axios";
+import BillDateModal from "./components/BillDateModal";
 
 const reportOptions = [
     {
@@ -169,42 +170,56 @@ const Sales = (props) => {
             footer: "",
         }),
         ...(role === "admin"
-            ? [columnHelper.accessor("actions", {
-                  header: "Actions",
-                  cell: ({ row }) => {
-                      return (
-                          <div className="d-flex">
-                              <svg
-                                  className="payment-icon"
-                                  onClick={async () => {
-                                      setLoading(true);
-                                      const {
-                                          data: { oldPayment },
-                                      } = await axios.get(
-                                          `/payment-old?bill_id=${row.original.bill_id}&shop_id=${data.shop_id}`
-                                      );
-                                      setPayment(oldPayment);
-                                      setPaymentId(row.original.bill_id);
-                                      setShowPayment(true);
-                                      setLoading(false);
-                                  }}
-                              >
-                                  <use xlinkHref="/images/sprite.svg#icon-inr"></use>
-                              </svg>
-                              <svg
-                                  className="delete-icon"
-                                  onClick={() => {
-                                      setDeleteId(row.original.bill_id);
-                                      setShowAlert(true);
-                                  }}
-                              >
-                                  <use xlinkHref="/images/sprite.svg#icon-circle-with-cross"></use>
-                              </svg>
-                          </div>
-                      );
-                  },
-                  enableSorting: false,
-              })]
+            ? [
+                  columnHelper.accessor("actions", {
+                      header: "Actions",
+                      cell: ({ row }) => {
+                          return (
+                              <div className="d-flex">
+                                  <svg
+                                      className="date-icon"
+                                      onClick={() => {
+                                          setBillDetail({
+                                              bill_id: row.original.bill_id,
+                                              bill_date: row.original.bill_date,
+                                          });
+                                          setShowBillDate(true);
+                                      }}
+                                  >
+                                      <use xlinkHref="/images/sprite.svg#icon-calendar"></use>
+                                  </svg>
+                                  <svg
+                                      className="payment-icon"
+                                      onClick={async () => {
+                                          setLoading(true);
+                                          const {
+                                              data: { oldPayment },
+                                          } = await axios.get(
+                                              `/payment-old?bill_id=${row.original.bill_id}&shop_id=${data.shop_id}`
+                                          );
+                                          setPayment(oldPayment);
+                                          setPaymentId(row.original.bill_id);
+                                          setShowPayment(true);
+                                          setLoading(false);
+                                      }}
+                                  >
+                                      <use xlinkHref="/images/sprite.svg#icon-inr"></use>
+                                  </svg>
+                                  <svg
+                                      className="delete-icon"
+                                      onClick={() => {
+                                          setDeleteId(row.original.bill_id);
+                                          setShowAlert(true);
+                                      }}
+                                  >
+                                      <use xlinkHref="/images/sprite.svg#icon-circle-with-cross"></use>
+                                  </svg>
+                              </div>
+                          );
+                      },
+                      enableSorting: false,
+                  }),
+              ]
             : []),
     ];
     const detailColumns = [
@@ -524,6 +539,8 @@ const Sales = (props) => {
     const [payment, setPayment] = useState(null);
     const [paymentId, setPaymentId] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [showBillDate, setShowBillDate] = useState(false);
+    const [billDetail, setBillDetail] = useState(null);
     // const [rowData, setRowData] = useState([]);
     // const defaultColDef = useMemo(() => {
     //     return {
@@ -878,6 +895,24 @@ const Sales = (props) => {
                         setPaymentId(null);
                         setShowPayment(false);
                     }}
+                />
+                <BillDateModal
+                    billDetail={billDetail}
+                    show={showBillDate}
+                    setShow={setShowBillDate}
+                    onYes={(success) => {
+                        if (success) {
+                            post("/sales-report", {
+                                preserveScroll: true,
+                                preserveState: true,
+                            });
+                        }
+                    }}
+                    onNo={() => {
+                        setBillDetail(null);
+                        setShowBillDate(false);
+                    }}
+                    setNotification={setErrors}
                 />
             </div>
         </>

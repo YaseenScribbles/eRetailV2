@@ -17,7 +17,7 @@ import Toast from "./components/Toast";
 import MobileNav from "./components/MobileNav";
 
 const CvS = (props) => {
-    const {  setData, post, processing } = useForm({
+    const { setData, post, processing } = useForm({
         shop_id: 0,
         from_date: format(new Date(), "yyyy-MM-dd"),
         to_date: format(new Date(), "yyyy-MM-dd"),
@@ -94,6 +94,73 @@ const CvS = (props) => {
                 );
             },
         }),
+
+        // 🔽 Profit Column
+        columnHelper.display({
+            id: "profit",
+            header: "Profit",
+            cell: (info) => {
+                const row = info.row.original;
+                const profit = +row.salevalue - +row.costvalue;
+                return (
+                    <span style={{ display: "block", textAlign: "right" }}>
+                        {profit.toFixed(2)}
+                    </span>
+                );
+            },
+            footer: () => {
+                const profit = table
+                    .getFilteredRowModel()
+                    .rows.reduce(
+                        (acc, curr) =>
+                            acc +
+                            (+curr.getValue("salevalue") -
+                                +curr.getValue("costvalue")),
+                        0
+                    );
+                return (
+                    <span style={{ display: "block", textAlign: "right" }}>
+                        {profit.toFixed(2)}
+                    </span>
+                );
+            },
+        }),
+
+        // 🔽 Profit % Column
+        columnHelper.display({
+            id: "profitPercentage",
+            header: "Profit %",
+            cell: (info) => {
+                const row = info.row.original;
+                const cost = +row.costvalue;
+                const sale = +row.salevalue;
+                const profit = sale - cost;
+                const percent = cost ? (profit / cost) * 100 : 0;
+                return (
+                    <span style={{ display: "block", textAlign: "right" }}>
+                        {percent.toFixed(2)}
+                    </span>
+                );
+            },
+            footer: () => {
+                const rows = table.getFilteredRowModel().rows;
+                const totalCost = rows.reduce(
+                    (acc, curr) => acc + +curr.getValue("costvalue"),
+                    0
+                );
+                const totalSale = rows.reduce(
+                    (acc, curr) => acc + +curr.getValue("salevalue"),
+                    0
+                );
+                const totalProfit = totalSale - totalCost;
+                const percent = totalCost ? (totalProfit / totalCost) * 100 : 0;
+                return (
+                    <span style={{ display: "block", textAlign: "right" }}>
+                        {percent.toFixed(2)}
+                    </span>
+                );
+            },
+        }),
     ];
 
     const table = useReactTable({
@@ -147,7 +214,7 @@ const CvS = (props) => {
                 value: shop.shopid,
             }));
             shops.push({ label: "ALL", value: 0 });
-            shops.sort((a,b) => a.value - b.value);
+            shops.sort((a, b) => a.value - b.value);
 
             setShops(shops);
         }

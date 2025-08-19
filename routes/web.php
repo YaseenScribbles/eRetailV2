@@ -88,4 +88,7 @@ Route::middleware('auth')->group(function () {
 
     //Bill date update
     Route::post("/billdate", [SalesController::class, 'updateBillDate']);
+
+    //Dashboard Apis
+    Route::get('/salespersons', [DashboardController::class, 'getSalesPersonSummary']);
 });

@@ -105,8 +105,42 @@ class DashboardController extends Controller
         WHERE shopid in ($shop_id)";
 
         $stockSummary = DB::select($stockSummarySql);
+        collect($stockSummary)->each(function ($item) {
+            $item->cost = number_format($item->cost, 2, '.', '');
+            $item->mrp = number_format($item->mrp, 2, '.', '');
+            $item->stock = number_format($item->stock, 2, '.', '');
+        });
 
         return response()->json(['stockSummary' => $stockSummary]);
         // return Response($stockSummary);
+    }
+
+    public function getSalesPersonSummary(Request $request)
+    {
+        $shop_id = auth()->user()->shops;
+        $from_date = $request->has('from_date') ?  $request->from_date : "";
+        $to_date = $request->has('to_date') ?  $request->to_date : "";
+
+        $fromDate = $from_date === '' ? 'convert(date, getdate())' : "'$from_date'";
+        $toDate = $to_date === '' ? 'convert(date, getdate())' : "'$to_date'";
+
+        $salesPersonSummarySql = "SELECT S.ShopName, ISNULL(SP.Name, 'NOT GIVEN') [Sales Person], SUM(BD.Qty) Qty, SUM(BD.Amount) Amount
+        FROM BillDetails BD
+        INNER JOIN Shops S ON S.ShopID = BD.ShopID
+        LEFT JOIN BillSalePersons BSP ON BSP.BillId = BD.BillID AND BSP.PluId = BD.PluID AND BSP.ShopId = BD.ShopID
+        LEFT JOIN SalesPersONs SP ON SP.ShopId = BD.ShopID AND SP.SPCode = BSP.SPID
+        WHERE BD.BillDt BETWEEN $fromDate AND $toDate
+        AND BD.ShopId IN ($shop_id)
+        GROUP BY S.ShopName, SP.Name
+        ORDER BY Qty DESC";
+
+        $salesPersonSummary = DB::select($salesPersonSummarySql);
+
+        collect($salesPersonSummary)->each(function ($item) {
+            $item->Qty = (float) $item->Qty;
+            $item->Amount =  number_format($item->Amount, 2, '.', '');
+        });
+
+        return response()->json(['salesPersons' => $salesPersonSummary]);
     }
 }

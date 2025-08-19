@@ -16,6 +16,8 @@ import { useForm } from "@inertiajs/react";
 import { format } from "date-fns";
 import MobileNav from "./components/MobileNav";
 import axios from "axios";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getSalesPersonSummary, getStockSummary } from "./Apis/Dashboard";
 // import { router } from "@inertiajs/react";
 
 const Dashboard = (props) => {
@@ -31,14 +33,27 @@ const Dashboard = (props) => {
     const [settlement, setSettlement] = useState([]);
     const [top10Products, setTop10Products] = useState([]);
     const [top10ReturnProducts, setTop10ReturnProducts] = useState([]);
-    const [stockSummary, setStockSummary] = useState([]);
+    // const [stockSummary, setStockSummary] = useState([]);
     const [top10Category, setTop10Category] = useState([]);
-    const { setData, get, processing } = useForm({
+    const { data, setData, get, processing } = useForm({
         from_date: format(new Date(), "yyyy-MM-dd"),
         to_date: format(new Date(), "yyyy-MM-dd"),
     });
     const [showMobileNav, setShowMobileNav] = useState(false);
-    const [stockSummaryLoading, setStockSummaryLoading] = useState(true);
+    // const [stockSummaryLoading, setStockSummaryLoading] = useState(true);
+    const queryClient = useQueryClient();
+
+    const { data: { salesPersons } = {}, isLoading: isSalesPersonsLoading } =
+        useQuery({
+            queryKey: ["dashboard", "salespersons"],
+            queryFn: () => getSalesPersonSummary(data.from_date, data.to_date),
+        });
+
+    const { data: { stockSummary } = {}, isLoading: stockSummaryLoading } =
+        useQuery({
+            queryKey: ["dashboard", "stockSummary"],
+            queryFn: getStockSummary,
+        });
 
     //for dragging menu
     const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
@@ -157,27 +172,27 @@ const Dashboard = (props) => {
         }));
     }, [duration]);
 
-    useEffect(() => {
-        axios
-            .get("/stock-summary", {
-                headers: {
-                    Accept: "application/json",
-                },
-            })
-            .then(({ data }) => {
-                if (data) {
-                    const stockSummary = data.stockSummary.map((e) => ({
-                        ...e,
-                        cost: (+e.cost).toFixed(2),
-                        mrp: (+e.mrp).toFixed(2),
-                        stock: (+e.stock).toFixed(2),
-                    }));
-                    setStockSummary(stockSummary);
-                    setStockSummaryLoading(false);
-                }
-            })
-            .catch((error) => console.log(error));
-    }, []);
+    // useEffect(() => {
+    //     axios
+    //         .get("/stock-summary", {
+    //             headers: {
+    //                 Accept: "application/json",
+    //             },
+    //         })
+    //         .then(({ data }) => {
+    //             if (data) {
+    //                 const stockSummary = data.stockSummary.map((e) => ({
+    //                     ...e,
+    //                     cost: (+e.cost).toFixed(2),
+    //                     mrp: (+e.mrp).toFixed(2),
+    //                     stock: (+e.stock).toFixed(2),
+    //                 }));
+    //                 setStockSummary(stockSummary);
+    //                 setStockSummaryLoading(false);
+    //             }
+    //         })
+    //         .catch((error) => console.log(error));
+    // }, []);
 
     return (
         <>
@@ -193,8 +208,8 @@ const Dashboard = (props) => {
                 onClick={() => setShowMobileNav(true)}
                 style={{
                     transform: `translate(${dragPosition.x}px, ${dragPosition.y}px)`,
-                    touchAction: 'none',
-                 }}
+                    touchAction: "none",
+                }}
             >
                 <svg className="mobile-nav__icon">
                     <use xlinkHref="/images/sprite.svg#icon-menu"></use>
@@ -225,6 +240,9 @@ const Dashboard = (props) => {
                                 get("/dashboard", {
                                     preserveState: true,
                                     preserveScroll: true,
+                                });
+                                queryClient.invalidateQueries({
+                                    queryKey: ["dashboard"],
                                 });
                             }}
                         >
@@ -415,6 +433,52 @@ const Dashboard = (props) => {
                             </tfoot>
                         </table>
                     </div>
+                )}
+
+                {isSalesPersonsLoading ? (
+                    <div className="cell stock">
+                        <p>
+                            Sales persons loading<span>.</span>
+                            <span>.</span>
+                            <span>.</span>
+                        </p>
+                    </div>
+                ) : (
+                    salesPersons &&
+                    salesPersons.length > 0 && (
+                        <div className="cell cell-7">
+                            <table className="dashboard-table dashboard-table--7">
+                                <CaptionHeadBody
+                                    data={salesPersons}
+                                    title={"Top Sales Persons"}
+                                />
+                                <tfoot>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                            {salesPersons
+                                                .reduce(
+                                                    (acc, curr) =>
+                                                        acc + +curr.Qty,
+                                                    0
+                                                )
+                                                .toFixed(2)}
+                                        </td>
+                                        <td>
+                                            {salesPersons
+                                                .reduce(
+                                                    (acc, curr) =>
+                                                        acc + +curr.Amount,
+                                                    0
+                                                )
+                                                .toFixed(2)}
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    )
                 )}
             </div>
         </>

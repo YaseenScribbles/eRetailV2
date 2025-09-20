@@ -36,6 +36,8 @@ class SalesController extends Controller
 
         $restricted_from_date = '';
 
+        $taxVersion = DB::query()->from('settings')->where('param_name', 'TaxVersion')->value('param_value') ?? 0;
+
         if ($data['shop_id'] > 0) {
             if (auth()->user()->sale_report !== 'ALL') {
                 $query = "select tookoverat from shopsettings where shopid = {$data['shop_id']}";
@@ -109,16 +111,18 @@ class SalesController extends Controller
 
             $sql = "SELECT M.BillNo bill_no,M.BillDt bill_date, P.Plucode barcode,
             P.Pluname + '-' + P.ID description, D.Qty sale_qty,ROUND(D.Qty * PM.CostPrice,2) cost_price,
-            D.Qty * D.ORate mrp,D.DisAmt discount,D.amount sale_price,P.HSNCode hsn_code,IIF(D.Rate > 1000, '12', '5') tax_perc,
-            IIF(D.Rate > 1000,
-            ROUND(D.Amount - ((CAST(100 AS FLOAT)/ CAST(112 AS FLOAT)) * D.Amount),2),
-            ROUND(D.Amount- ((CAST(100 AS FLOAT)/ CAST(105 AS FLOAT)) * D.Amount),2)) sale_tax,
-            IIF(D.Rate > 1000,
-            ROUND(100 * (((CAST(100 AS FLOAT)/ CAST(112 AS FLOAT)) * D.Amount) - (D.Qty * PM.CostPrice))/(D.Qty * PM.CostPrice),2),
-            ROUND(100 * (((CAST(100 AS FLOAT)/ CAST(105 AS FLOAT)) * D.Amount) - (D.Qty * PM.CostPrice))/(D.Qty * PM.CostPrice),2))  profit_perc
+            D.Qty * D.ORate mrp,D.DisAmt discount,D.amount sale_price,T.HSN hsn_code,IIF(D.Rate > T.Val, T.Mx, T.Mn) tax_perc,
+            IIF(D.Rate > T.Val,
+            ROUND(D.Amount - ((CAST(100 AS FLOAT)/ CAST((100 + T.Mx) AS FLOAT)) * D.Amount),2),
+            ROUND(D.Amount- ((CAST(100 AS FLOAT)/ CAST((100 + T.Mn) AS FLOAT)) * D.Amount),2)) sale_tax,
+            IIF(D.Rate > T.Val,
+            ROUND(100 * (((CAST(100 AS FLOAT)/ CAST((100 + T.Mx) AS FLOAT)) * D.Amount) - (D.Qty * PM.CostPrice))/(D.Qty * PM.CostPrice),2),
+            ROUND(100 * (((CAST(100 AS FLOAT)/ CAST((100 + T.Mn) AS FLOAT)) * D.Amount) - (D.Qty * PM.CostPrice))/(D.Qty * PM.CostPrice),2))  profit_perc
             FROM BillMaster M
             INNER JOIN BillDetails D ON M.BillID = D.BillID AND M.BillDt BETWEEN '{$data['start_date']}' AND '{$data['end_date']}' AND D.Qty <> 0
             INNER JOIN ProductMaster P ON P.PluID = D.PluID
+            INNER JOIN ProductAttributes A ON A.PluId = D.PluId
+            INNER JOIN ProductTax T ON A.DeptId = T.DeptId AND A.CatId = T.CatId AND A.MaterialId = T.MatId AND T.IsUpdated = {$taxVersion}
             INNER JOIN PriceMaster PM ON PM.PluId = D.PluId AND PM.ShopId = {$data['shop_id']}";
 
             if ($data['shop_id'] > 0) {

@@ -36,8 +36,6 @@ class SalesController extends Controller
 
         $restricted_from_date = '';
 
-        $taxVersion = DB::query()->from('settings')->where('param_name', 'TaxVersion')->value('param_value') ?? 0;
-
         if ($data['shop_id'] > 0) {
             if (auth()->user()->sale_report !== 'ALL') {
                 $query = "select tookoverat from shopsettings where shopid = {$data['shop_id']}";
@@ -122,7 +120,7 @@ class SalesController extends Controller
             INNER JOIN BillDetails D ON M.BillID = D.BillID AND M.BillDt BETWEEN '{$data['start_date']}' AND '{$data['end_date']}' AND D.Qty <> 0
             INNER JOIN ProductMaster P ON P.PluID = D.PluID
             INNER JOIN ProductAttributes A ON A.PluId = D.PluId
-            INNER JOIN ProductTax T ON A.DeptId = T.DeptId AND A.CatId = T.CatId AND A.MaterialId = T.MatId AND T.IsUpdated = {$taxVersion}
+            INNER JOIN ProductTax T ON A.DeptId = T.DeptId AND A.CatId = T.CatId AND A.MaterialId = T.MatId AND T.IsUpdated = M.IsUpdated
             INNER JOIN PriceMaster PM ON PM.PluId = D.PluId AND PM.ShopId = {$data['shop_id']}";
 
             if ($data['shop_id'] > 0) {

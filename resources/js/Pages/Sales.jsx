@@ -243,6 +243,11 @@ const Sales = (props) => {
             cell: (info) => info.getValue(),
             footer: "",
         }),
+        columnHelper.accessor("product", {
+            header: "Product Group",
+            cell: (info) => info.getValue(),
+            footer: "",
+        }),
         columnHelper.accessor("sale_qty", {
             header: "Qty",
             cell: (info) => {
@@ -869,7 +874,7 @@ const Sales = (props) => {
                     tableData={tableData}
                     reportName={"Sales Report"}
                     tooltipColumns={
-                        reportStyle === "details" ? ["description"] : []
+                        reportStyle === "details" ? ["description", "product"] : []
                     }
                 />
                 <Toast errors={errors} />

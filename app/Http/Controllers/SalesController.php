@@ -108,7 +108,7 @@ class SalesController extends Controller
         if ($data['report'] == "details") {
 
             $sql = "SELECT M.BillNo bill_no,M.BillDt bill_date, P.Plucode barcode,
-            P.Pluname + '-' + P.ID description, D.Qty sale_qty,ROUND(D.Qty * PM.CostPrice,2) cost_price,
+            P.Pluname + '-' + P.ID description, A.Department + N' → ' + A.Category + N' → ' + A.Material product, D.Qty sale_qty,ROUND(D.Qty * PM.CostPrice,2) cost_price,
             D.Qty * D.ORate mrp,D.DisAmt discount,D.amount sale_price,T.HSN hsn_code,IIF(D.Rate > T.Val, T.Mx, T.Mn) tax_perc,
             IIF(D.Rate > T.Val,
             ROUND(D.Amount - ((CAST(100 AS FLOAT)/ CAST((100 + T.Mx) AS FLOAT)) * D.Amount),2),

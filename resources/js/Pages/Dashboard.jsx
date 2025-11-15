@@ -474,6 +474,15 @@ const Dashboard = (props) => {
                                                 )
                                                 .toFixed(2)}
                                         </td>
+                                        <td>
+                                            {salesPersons
+                                                .reduce(
+                                                    (acc, curr) =>
+                                                        acc + +curr.Earned,
+                                                    0
+                                                )
+                                                .toFixed(2)}
+                                        </td>
                                     </tr>
                                 </tfoot>
                             </table>

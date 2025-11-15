@@ -124,11 +124,19 @@ class DashboardController extends Controller
         $fromDate = $from_date === '' ? 'convert(date, getdate())' : "'$from_date'";
         $toDate = $to_date === '' ? 'convert(date, getdate())' : "'$to_date'";
 
-        $salesPersonSummarySql = "SELECT S.ShopName, ISNULL(SP.Name, 'NOT GIVEN') [Sales Person], SUM(BD.Qty) Qty, SUM(BD.Amount) Amount
+        $salesPersonSummarySql = "SELECT SUBSTRING(S.ShopName, 7, (LEN(S.ShopName) - 5)) Shop, ISNULL(SP.Name, 'NOT GIVEN') [Person], SUM(BD.Qty) Qty, SUM(BD.Amount) Amount,
+        SUM(
+            CASE
+                WHEN C.Type = 'PERCENT' THEN (BD.Amount * C.Value) / 100
+                WHEN C.Type = 'VALUE' THEN BD.Qty * C.Value
+                ELSE 0
+            END
+        ) [Earned]
         FROM BillDetails BD
         INNER JOIN Shops S ON S.ShopID = BD.ShopID
         LEFT JOIN BillSalePersons BSP ON BSP.BillId = BD.BillID AND BSP.PluId = BD.PluID AND BSP.ShopId = BD.ShopID
         LEFT JOIN SalesPersONs SP ON SP.ShopId = BD.ShopID AND SP.SPCode = BSP.SPID
+        LEFT JOIN V_ActiveCommissionInfo C ON C.ShopId = BD.ShopID AND C.PluID = BD.PluID AND BD.BillDt BETWEEN C.BeginDate AND C.EndDate
         WHERE BD.BillDt BETWEEN $fromDate AND $toDate
         AND BD.ShopId IN ($shop_id)
         GROUP BY S.ShopName, SP.Name
@@ -139,6 +147,7 @@ class DashboardController extends Controller
         collect($salesPersonSummary)->each(function ($item) {
             $item->Qty = (float) $item->Qty;
             $item->Amount =  number_format($item->Amount, 2, '.', '');
+            $item->Earned = (float) $item->Earned;;
         });
 
         return response()->json(['salesPersons' => $salesPersonSummary]);

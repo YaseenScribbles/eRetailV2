@@ -152,6 +152,7 @@
 
     .dashboard-table {
         width: 100%;
+        // max-width: 100%;
         font-size: 1.3rem;
 
         caption {
@@ -253,8 +254,18 @@
 
         &--7 {
             tbody {
+
+                td:nth-child(1),
+                td:nth-child(2){
+                    max-width: 95px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
                 td:nth-child(3),
-                td:nth-child(4) {
+                td:nth-child(4),
+                td:nth-child(5) {
                     text-align: right;
                 }
             }

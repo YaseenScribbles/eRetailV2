@@ -2,6 +2,31 @@ import * as XLSX from "xlsx";
 import { flexRender } from "@tanstack/react-table"; // or wherever it's coming from
 import { format, parse } from "date-fns";
 
+function ColumnFilter({ column }) {
+    const columnFilterValue = column.getFilterValue() ?? "";
+
+    // Get unique values for this column (TanStack generates this automatically)
+    const uniqueValues = Array.from(
+        column.getFacetedUniqueValues()?.keys() || []
+    );
+
+    return (
+        <>
+            <input
+                className="grid__input mt-1"
+                list={column.id + "-options"} // link to datalist
+                value={columnFilterValue}
+                onChange={(e) => column.setFilterValue(e.target.value)}
+            />
+            <datalist id={column.id + "-options"} className="suggestion__list">
+                {uniqueValues.map((val) => (
+                    <option key={val} value={val} />
+                ))}
+            </datalist>
+        </>
+    );
+}
+
 const Grid = ({
     globalFilter,
     setGlobalFilter,
@@ -11,6 +36,7 @@ const Grid = ({
     tooltipColumns = [],
     footerRequired = true,
     excludeSortingColumns = [],
+    isColumnFiltersEnabled = false,
 }) => {
     const handleExport = (data, reportName) => {
         // Format headers
@@ -88,6 +114,13 @@ const Grid = ({
                                                 </svg>
                                             )}
                                         </div>
+                                        {isColumnFiltersEnabled &&
+                                            header.column.getCanFilter() && (
+                                                <ColumnFilter
+                                                    column={header.column}
+                                                    table={table}
+                                                />
+                                            )}
                                     </th>
                                 ))}
                             </tr>

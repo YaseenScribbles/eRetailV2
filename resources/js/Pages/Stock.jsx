@@ -5,6 +5,8 @@ import { useForm } from "@inertiajs/react";
 import {
     createColumnHelper,
     getCoreRowModel,
+    getFacetedRowModel,
+    getFacetedUniqueValues,
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
@@ -32,6 +34,7 @@ const summaryColumns = [
         cell: (info) => info.getValue(),
         header: "Product",
         footer: () => "Total",
+        enableColumnFilter: false,
     }),
     columnHelper.accessor("stock", {
         cell: (info) => {
@@ -52,6 +55,7 @@ const summaryColumns = [
                 </span>
             );
         },
+        enableColumnFilter: false,
     }),
     columnHelper.accessor("cp", {
         cell: (info) => {
@@ -72,6 +76,7 @@ const summaryColumns = [
                 </span>
             );
         },
+        enableColumnFilter: false,
     }),
     columnHelper.accessor("rp", {
         cell: (info) => {
@@ -92,14 +97,25 @@ const summaryColumns = [
                 </span>
             );
         },
+        enableColumnFilter: false,
     }),
 ];
 
 const detailColumns = [
-    columnHelper.accessor("product", {
+    columnHelper.accessor("department", {
         cell: (info) => info.getValue(),
-        header: "Product",
+        header: "Department",
         footer: "Total",
+    }),
+    columnHelper.accessor("category", {
+        cell: (info) => info.getValue(),
+        header: "Category",
+        footer: "",
+    }),
+    columnHelper.accessor("type", {
+        cell: (info) => info.getValue(),
+        header: "Type",
+        footer: "",
     }),
     columnHelper.accessor("barcode", {
         cell: (info) => info.getValue(),
@@ -136,6 +152,7 @@ const detailColumns = [
                 </span>
             );
         },
+        enableColumnFilter: false,
     }),
     columnHelper.accessor("cp", {
         cell: (info) => {
@@ -147,6 +164,7 @@ const detailColumns = [
         },
         header: "Cost Price",
         footer: "",
+        enableColumnFilter: false,
     }),
     columnHelper.accessor("rp", {
         cell: (info) => {
@@ -158,6 +176,7 @@ const detailColumns = [
         },
         header: "Retail Price",
         footer: "",
+        enableColumnFilter: false,
     }),
     columnHelper.accessor("totcp", {
         cell: (info) => {
@@ -178,6 +197,7 @@ const detailColumns = [
                 </span>
             );
         },
+        enableColumnFilter: false,
     }),
     columnHelper.accessor("totrp", {
         cell: (info) => {
@@ -198,11 +218,13 @@ const detailColumns = [
                 </span>
             );
         },
+        enableColumnFilter: false,
     }),
     columnHelper.accessor("days", {
         cell: (info) => info.getValue(),
         header: "Days",
         footer: "",
+        enableColumnFilter: false,
     }),
 ];
 
@@ -216,9 +238,10 @@ const Stock = (props) => {
     const [tableData, setTableData] = useState([]);
     const [sorting, setSorting] = useState([]);
     const [globalFilter, setGlobalFilter] = useState("");
+    const [columnFilters, setColumnFilters] = useState([]);
     const [pagination, setpagination] = useState({
         pageIndex: 0,
-        pageSize: 10,
+        pageSize: 8,
     });
     const [reportStyle, setReportStyle] = useState("");
     const [showMobileNav, setShowMobileNav] = useState(false);
@@ -230,6 +253,7 @@ const Stock = (props) => {
             sorting,
             globalFilter,
             pagination,
+            columnFilters,
         },
 
         getCoreRowModel: getCoreRowModel(),
@@ -239,6 +263,11 @@ const Stock = (props) => {
 
         onGlobalFilterChange: setGlobalFilter,
         getFilteredRowModel: getFilteredRowModel(),
+
+        onColumnFiltersChange: setColumnFilters,
+
+        getFacetedRowModel: getFacetedRowModel(),
+        getFacetedUniqueValues: getFacetedUniqueValues(),
 
         onPaginationChange: setpagination,
         getPaginationRowModel: getPaginationRowModel(),
@@ -396,6 +425,8 @@ const Stock = (props) => {
                         table={table}
                         tableData={tableData}
                         reportName="Stock Report"
+                        tooltipColumns={["description"]}
+                        isColumnFiltersEnabled
                     />
                 )}
                 <Toast errors={errors} />

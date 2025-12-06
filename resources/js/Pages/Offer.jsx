@@ -12,6 +12,8 @@ import {
     getFilteredRowModel,
     getPaginationRowModel,
     useReactTable,
+    getFacetedRowModel,
+    getFacetedUniqueValues,
 } from "@tanstack/react-table";
 
 const Offer = (props) => {
@@ -23,9 +25,10 @@ const Offer = (props) => {
     const [errors, setErrors] = useState([]);
     const [sorting, setSorting] = useState([]);
     const [globalFilter, setGlobalFilter] = useState("");
+    const [columnFilters, setColumnFilters] = useState([]);
     const [pagination, setPagination] = useState({
         pageIndex: 0,
-        pageSize: 10,
+        pageSize: 8,
     });
     const [tableData, setTableData] = useState([]);
     const columnHelper = createColumnHelper();
@@ -33,14 +36,22 @@ const Offer = (props) => {
         columnHelper.accessor("Barcode"),
         columnHelper.accessor("Desc"),
         columnHelper.accessor("Size"),
-        columnHelper.accessor("CostPrice"),
-        columnHelper.accessor("RetailPrice"),
-        columnHelper.accessor("Discount"),
-        columnHelper.accessor("Stock"),
+        columnHelper.accessor("CostPrice", {
+            enableColumnFilter: false,
+        }),
+        columnHelper.accessor("RetailPrice", {
+            enableColumnFilter: false,
+        }),
+        columnHelper.accessor("Discount", {
+            enableColumnFilter: false,
+        }),
+        columnHelper.accessor("Stock", {
+            enableColumnFilter: false,
+        }),
         columnHelper.accessor("Department"),
         columnHelper.accessor("Category"),
-        columnHelper.accessor("Material"),
         columnHelper.accessor("Catalog"),
+        columnHelper.accessor("Type"),
     ];
 
     const table = useReactTable({
@@ -50,6 +61,7 @@ const Offer = (props) => {
             sorting,
             globalFilter,
             pagination,
+            columnFilters
         },
 
         getCoreRowModel: getCoreRowModel(),
@@ -59,6 +71,11 @@ const Offer = (props) => {
 
         onGlobalFilterChange: setGlobalFilter,
         getFilteredRowModel: getFilteredRowModel(),
+
+        onColumnFiltersChange: setColumnFilters,
+
+        getFacetedRowModel: getFacetedRowModel(),
+        getFacetedUniqueValues: getFacetedUniqueValues(),
 
         onPaginationChange: setPagination,
         getPaginationRowModel: getPaginationRowModel(),
@@ -177,6 +194,7 @@ const Offer = (props) => {
                     reportName={"Offer Report"}
                     footerRequired={false}
                     tooltipColumns={["Desc", "Catalog"]}
+                    isColumnFiltersEnabled
                 />
                 <Toast errors={errors} />
             </div>

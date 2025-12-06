@@ -49,8 +49,8 @@ class OfferController extends Controller
                 'S.Stock',
                 'A.Department',
                 'A.Category',
-                'A.Material',
-                'A.Catalog'
+                'A.Catalog',
+                'A.Type'
             ])
             ->orderBy('A.Catalog')
             ->orderBy('M.ID')

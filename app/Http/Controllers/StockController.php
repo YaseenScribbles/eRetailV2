@@ -52,7 +52,7 @@ class StockController extends Controller
         }
         if ($data['report'] == "details") {
 
-            $sql = "SELECT LEFT(A.Department,DATALENGTH(A.Department) - 4 ) + '-' + A.Category product,
+            $sql = "SELECT A.Department department, A.Category category, A.Type type,
             P.Plucode barcode,P.Pluname description,P.Id size,ST.stock stock,PM.CostPrice cp,PM.RetailPrice rp,SUM(ST.stock * PM.CostPrice) totcp,
             SUM(ST.stock * PM.RetailPrice) totrp, COALESCE(D.[Days], 0) [days]
             FROM V_STOCKPOS ST
@@ -66,7 +66,7 @@ class StockController extends Controller
             $sql .= " INNER JOIN PRODUCTMASTER P ON P.PluID = ST.pluid
             INNER JOIN ProductAttributes A ON A.PluId = P.PluID
             LEFT JOIN DueDays D ON ST.location_id = D.ShopId AND ST.PluId = D.PLuId
-            GROUP BY A.Department,A.Category,P.Plucode,ST.Stock,PM.CostPrice,PM.RetailPrice,P.Pluname,P.Id,D.[Days]";
+            GROUP BY A.Department,A.Category,A.Type,P.Plucode,ST.Stock,PM.CostPrice,PM.RetailPrice,P.Pluname,P.Id,D.[Days]";
 
             $result = DB::select($sql);
             session(['report_style' => 'details']);

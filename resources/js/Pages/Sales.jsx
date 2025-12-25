@@ -61,6 +61,7 @@ const Sales = (props) => {
     const [role] = useState(
         JSON.parse(localStorage.getItem("eRetail_user")).role
     );
+    const [billNo, setBillNo] = useState(0)
     const summaryColumns = [
         columnHelper.accessor("bill_no", {
             header: "Bill No",
@@ -183,6 +184,7 @@ const Sales = (props) => {
                                               bill_id: row.original.bill_id,
                                               bill_date: row.original.bill_date,
                                           });
+                                          setBillNo(row.original.bill_no)
                                           setShowBillDate(true);
                                       }}
                                   >
@@ -199,6 +201,7 @@ const Sales = (props) => {
                                           );
                                           setPayment(oldPayment);
                                           setPaymentId(row.original.bill_id);
+                                          setBillNo(row.original.bill_no)
                                           setShowPayment(true);
                                           setLoading(false);
                                       }}
@@ -209,6 +212,7 @@ const Sales = (props) => {
                                       className="delete-icon"
                                       onClick={() => {
                                           setDeleteId(row.original.bill_id);
+                                          setBillNo(row.original.bill_no)
                                           setShowAlert(true);
                                       }}
                                   >
@@ -879,12 +883,14 @@ const Sales = (props) => {
                 />
                 <Toast errors={errors} />
                 <AlertModal
+                    billNo={billNo}
                     show={showAlert}
                     onYes={(setIsSubmitting) => {
                         deleteBill(setIsSubmitting);
                     }}
                     onNo={() => {
                         setDeleteId(null);
+                        setBillNo(0);
                         setShowAlert(false);
                     }}
                     isProcessingRequired={true}
@@ -892,17 +898,20 @@ const Sales = (props) => {
                 <PaymentModal
                     show={showPayment}
                     payment={payment}
+                    billNo={billNo}
                     onYes={(newData, setIsSubmitting) =>
                         updateBill(newData, setIsSubmitting)
                     }
                     onNo={() => {
                         setPayment(null);
                         setPaymentId(null);
+                        setBillNo(0);
                         setShowPayment(false);
                     }}
                 />
                 <BillDateModal
                     billDetail={billDetail}
+                    billNo={billNo}
                     show={showBillDate}
                     setShow={setShowBillDate}
                     onYes={(success) => {
@@ -915,6 +924,7 @@ const Sales = (props) => {
                     }}
                     onNo={() => {
                         setBillDetail(null);
+                        setBillNo(0);
                         setShowBillDate(false);
                     }}
                     setNotification={setErrors}

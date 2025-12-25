@@ -45,7 +45,7 @@ const PaymentModal = (props) => {
 
     return (
         <dialog className="modal" open={props.show}>
-            <div className="modal__header">Payment Info</div>
+            <div className="modal__header">Payment Info (Bill No:{props.billNo})</div>
             <div className="modal__body">
                 <table className="table">
                     <thead>

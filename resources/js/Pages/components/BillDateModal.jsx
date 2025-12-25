@@ -11,6 +11,7 @@ function BillDateModal({
     onYes,
     billDetail,
     setNotification,
+    billNo,
 }) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [date, setDate] = useState(new Date());
@@ -81,7 +82,7 @@ function BillDateModal({
 
     return (
         <dialog className="modal date" open={show}>
-            <div className="modal__header">Bill Date</div>
+            <div className="modal__header">Bill Date (Bill No:{billNo})</div>
             <div className="modal__body">
                 <div className="form">
                     <div className="date-input">

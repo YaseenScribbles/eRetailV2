@@ -125,13 +125,13 @@ class DashboardController extends Controller
         $toDate = $to_date === '' ? 'convert(date, getdate())' : "'$to_date'";
 
         $salesPersonSummarySql = "SELECT SUBSTRING(S.ShopName, 7, (LEN(S.ShopName) - 5)) Shop, ISNULL(SP.Name, 'NOT GIVEN') [Person], SUM(BD.Qty) Qty, SUM(BD.Amount) Amount,
-        SUM(
+        ROUND(SUM(
             CASE
                 WHEN C.Type = 'PERCENT' THEN (BD.Amount * C.Value) / 100
                 WHEN C.Type = 'VALUE' THEN BD.Qty * C.Value
                 ELSE 0
             END
-        ) [Earned]
+        ), 2, 0) [Earned]
         FROM BillDetails BD
         INNER JOIN Shops S ON S.ShopID = BD.ShopID
         LEFT JOIN BillSalePersons BSP ON BSP.BillId = BD.BillID AND BSP.PluId = BD.PluID AND BSP.ShopId = BD.ShopID

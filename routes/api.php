@@ -20,3 +20,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('/token', [ApiController::class, 'issueToken']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::delete('/token', [ApiController::class, 'revokeToken']);
+    Route::get('/sales', [ApiController::class, 'sales']);
+});
+

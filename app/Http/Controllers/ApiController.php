@@ -21,6 +21,11 @@ class ApiController extends Controller
         }
 
         $user = Auth::user();
+
+        if (!$user->api_only) {
+            Auth::logout();
+            return response()->json(['message' => 'Invalid credentials.'], 401);
+        }
         $expiryMinutes = config('sanctum.expiration');
         $expiresAt = Carbon::now()->addMinutes($expiryMinutes);
         $token = $user->createToken('vigilance')->plainTextToken;

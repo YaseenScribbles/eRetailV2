@@ -30,6 +30,7 @@ class UserController extends Controller
             'buyer_id' => 'nullable|string',
             'sale_report' => 'required|string',
             'has_invoice_report' => 'boolean',
+            'api_only' => 'boolean',
         ]);
 
         User::create($data);
@@ -48,6 +49,7 @@ class UserController extends Controller
             'buyer_id' => 'nullable|string',
             'sale_report' => 'required|string',
             'has_invoice_report' => 'boolean',
+            'api_only' => 'boolean',
         ]);
 
         if (empty($data['password'])) {

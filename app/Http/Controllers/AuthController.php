@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,6 +19,12 @@ class AuthController extends Controller
             'email' => 'email|required|exists:web_users,email',
             'password' => 'required'
         ]);
+
+        $user = User::where('email', $credentials['email'])->first();
+
+        if ($user && $user->api_only) {
+            return inertia('Login')->with('message', 'Invalid credentials');
+        }
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();

@@ -53,6 +53,7 @@ const Users = (props) => {
         buyer_id: "",
         sale_report: "",
         has_invoice_report: false,
+        api_only: false,
     });
 
     const [shops, setShops] = useState([]);
@@ -95,6 +96,10 @@ const Users = (props) => {
         }),
         columnHelper.accessor("sale_report", {
             header: "Sale Report",
+            cell: (info) => info.getValue(),
+        }),
+        columnHelper.accessor("api_only", {
+            header: "API Only",
             cell: (info) => info.getValue(),
         }),
         {
@@ -177,6 +182,7 @@ const Users = (props) => {
             email: data.email,
             mobile: data.mobile || "",
             has_invoice_report: data.has_invoice_report == "YES" ? true : false,
+            api_only: data.api_only == "YES" ? true : false,
         }));
 
         setEditId(data.id);
@@ -295,6 +301,7 @@ const Users = (props) => {
             buyer_id: "",
             sale_report: "",
             has_invoice_report: false,
+            api_only: false,
         });
         setSelectedBuyers([]);
         setSelectedShops([]);
@@ -325,6 +332,7 @@ const Users = (props) => {
                 name: user.name.toUpperCase(),
                 role: user.role.toUpperCase(),
                 has_invoice_report: user.has_invoice_report == 1 ? "YES" : "NO",
+                api_only: user.api_only ? "YES" : "NO",
             }));
             setTableData(users);
         }
@@ -557,6 +565,29 @@ const Users = (props) => {
                                 </svg>
                             </div>
                             Invoice Report
+                        </label>
+                    </div>
+                    <div className="form__group">
+                        <input
+                            type="checkbox"
+                            name="api_only"
+                            id="api_only"
+                            onChange={(e) =>
+                                setData((prev) => ({
+                                    ...prev,
+                                    api_only: e.target.checked ? true : false,
+                                }))
+                            }
+                            className="checkbox"
+                            checked={data.api_only}
+                        />
+                        <label htmlFor="api_only">
+                            <div className="custom-checkbox">
+                                <svg className="check-icon">
+                                    <use xlinkHref="/images/sprite.svg#icon-check"></use>
+                                </svg>
+                            </div>
+                            API Only
                         </label>
                     </div>
                     <div className="form__group">

@@ -27,7 +27,8 @@ class User extends Authenticatable
         'shops',
         'has_invoice_report',
         'buyer_id',
-        'sale_report'
+        'sale_report',
+        'api_only'
     ];
 
     /**
@@ -48,6 +49,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'api_only' => 'boolean',
     ];
 
     protected $table = 'web_users';

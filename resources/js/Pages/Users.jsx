@@ -566,8 +566,6 @@ const Users = (props) => {
                             </div>
                             Invoice Report
                         </label>
-                    </div>
-                    <div className="form__group">
                         <input
                             type="checkbox"
                             name="api_only"

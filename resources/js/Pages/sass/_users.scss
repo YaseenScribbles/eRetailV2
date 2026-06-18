@@ -28,9 +28,9 @@
         &:nth-child(10){
             font-size: 1.5rem;
             display: flex;
-            gap: 1rem;
+            gap: 2rem;
             align-items: center;
-            flex: 0 0 10%;
+            flex: 0 0 auto;
             color: color.adjust($color-primary,$lightness:-10%);
 
             label {

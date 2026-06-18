@@ -28,10 +28,13 @@ class ApiController extends Controller
         }
         $expiryMinutes = config('sanctum.expiration');
         $expiresAt = Carbon::now()->addMinutes($expiryMinutes);
-        $token = $user->createToken('vigilance')->plainTextToken;
+
+        $newToken = $user->createToken('vigilance');
+        $newToken->accessToken->expires_at = $expiresAt;
+        $newToken->accessToken->save();
 
         return response()->json([
-            'token'      => $token,
+            'token'      => $newToken->plainTextToken,
             'expires_at' => $expiresAt->toIso8601String(),
         ]);
     }

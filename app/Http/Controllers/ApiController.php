@@ -67,13 +67,14 @@ class ApiController extends Controller
         }
 
         $sql = "SELECT BM.BillId bill_id, BM.BillNo bill_no, BM.BillDt bill_date,
-                BM.TotQty total_qty, CAST(ROUND(BM.TotAmt + BM.DisAmt, 2) AS DECIMAL(18,2)) total_amount,
-                CAST(ROUND(BM.DisAmt, 2) AS DECIMAL(18,2)) disc_amount, CAST(ROUND(BM.TotAmt, 2) AS DECIMAL(18,2)) final_amount, C.CustomerName customer,
+                BM.TotQty total_qty, DX.gross_amount total_amount,
+                CAST(ROUND(BM.DisAmt, 2) AS DECIMAL(18,2)) disc_amount, CAST(ROUND(BM.TotAmt - (DX.gross_amount - BM.DisAmt), 2) AS DECIMAL(18,2)) round_off, CAST(ROUND(BM.TotAmt, 2) AS DECIMAL(18,2)) final_amount, C.CustomerName customer,
                 DX.tax_amount, CAST(ROUND(BM.TotAmt - DX.tax_amount, 2) AS DECIMAL(18,2)) taxable, DX.bill_mode
                 FROM BillMaster BM
                 INNER JOIN Customers C ON C.CustomerID = BM.CustomerID
                 INNER JOIN (
                     SELECT D.BillID,
+                        CAST(ROUND(SUM(D.Qty * D.ORATE), 2) AS DECIMAL(18,2)) gross_amount,
                         CAST(ROUND(SUM(IIF(D.Rate > T.Val,
                             D.Amount - (100.0 / (100.0 + T.Mx)) * D.Amount,
                             D.Amount - (100.0 / (100.0 + T.Mn)) * D.Amount)), 2) AS DECIMAL(18,2)) tax_amount,
@@ -99,7 +100,7 @@ class ApiController extends Controller
             $bindings[] = $restrictedFromDate;
         }
 
-        $sql .= " ORDER BY BM.BillDt DESC";
+        $sql .= " ORDER BY bill_date DESC, bill_id DESC";
 
         $sales = DB::select($sql, $bindings);
 

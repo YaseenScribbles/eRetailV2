@@ -67,10 +67,24 @@ class ApiController extends Controller
         }
 
         $sql = "SELECT BM.BillId bill_id, BM.BillNo bill_no, BM.BillDt bill_date,
-                BM.TotQty total_qty, BM.TotAmt + BM.DisAmt total_amount,
-                BM.DisAmt disc_amount, BM.TotAmt final_amount, C.CustomerName customer
+                BM.TotQty total_qty, CAST(ROUND(BM.TotAmt + BM.DisAmt, 2) AS DECIMAL(18,2)) total_amount,
+                CAST(ROUND(BM.DisAmt, 2) AS DECIMAL(18,2)) disc_amount, CAST(ROUND(BM.TotAmt, 2) AS DECIMAL(18,2)) final_amount, C.CustomerName customer,
+                DX.tax_amount, CAST(ROUND(BM.TotAmt - DX.tax_amount, 2) AS DECIMAL(18,2)) taxable, DX.bill_mode
                 FROM BillMaster BM
                 INNER JOIN Customers C ON C.CustomerID = BM.CustomerID
+                INNER JOIN (
+                    SELECT D.BillID,
+                        CAST(ROUND(SUM(IIF(D.Rate > T.Val,
+                            D.Amount - (100.0 / (100.0 + T.Mx)) * D.Amount,
+                            D.Amount - (100.0 / (100.0 + T.Mn)) * D.Amount)), 2) AS DECIMAL(18,2)) tax_amount,
+                        CASE MIN(D.BillMode) WHEN 0 THEN 'Normal' WHEN 1 THEN 'Exchange' WHEN 2 THEN 'Return' END bill_mode
+                    FROM BillDetails D
+                    INNER JOIN BillMaster BM2 ON BM2.BillId = D.BillID
+                    INNER JOIN ProductAttributes A ON A.PluId = D.PluId
+                    INNER JOIN ProductTax T ON A.DeptId = T.DeptId AND A.CatId = T.CatId AND A.MaterialId = T.MatId AND T.IsUpdated = BM2.IsUpdated
+                    WHERE D.Qty <> 0
+                    GROUP BY D.BillID
+                ) DX ON DX.BillID = BM.BillId
                 WHERE BM.ShopId = ?
                 AND BM.BillDt BETWEEN ? AND ?";
 

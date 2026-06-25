@@ -66,14 +66,15 @@ class ApiController extends Controller
             $restrictedFromDate = $setting ? $setting[0]->tookoverat : null;
         }
 
-        $sql = "SELECT BM.BillId bill_id, BM.BillNo bill_no, BM.BillDt bill_date,
-                BM.TotQty total_qty, DX.gross_amount total_amount,
+        $sql = "SELECT BM.BillId bill_id, BM.BillNo bill_no, BM.BillDt bill_date, CAST(BM.BillTime AS TIME) bill_time,
+                DX.total_qty, DX.gross_amount total_amount,
                 CAST(ROUND(BM.DisAmt, 2) AS DECIMAL(18,2)) disc_amount, CAST(ROUND(BM.TotAmt - (DX.gross_amount - BM.DisAmt), 2) AS DECIMAL(18,2)) round_off, CAST(ROUND(BM.TotAmt, 2) AS DECIMAL(18,2)) final_amount, C.CustomerName customer,
                 DX.tax_amount, CAST(ROUND(BM.TotAmt - DX.tax_amount, 2) AS DECIMAL(18,2)) taxable, DX.bill_mode
                 FROM BillMaster BM
                 INNER JOIN Customers C ON C.CustomerID = BM.CustomerID
                 INNER JOIN (
                     SELECT D.BillID,
+                        SUM(D.Qty) total_qty,
                         CAST(ROUND(SUM(D.Qty * D.ORATE), 2) AS DECIMAL(18,2)) gross_amount,
                         CAST(ROUND(SUM(IIF(D.Rate > T.Val,
                             D.Amount - (100.0 / (100.0 + T.Mx)) * D.Amount,

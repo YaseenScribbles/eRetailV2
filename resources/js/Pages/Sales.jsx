@@ -710,7 +710,7 @@ const Sales = (props) => {
                 setTableData(
                     props.result.map((row) => ({
                         ...row,
-                        bill_date: new Date(row.bill_date).toLocaleDateString(),
+                        bill_date: format(new Date(row.bill_date), "dd/MM/yyyy"),
                         total_amount: (+row.total_amount).toFixed(2),
                         disc_amount: (+row.disc_amount).toFixed(2),
                         final_amount: (+row.final_amount).toFixed(2),
@@ -720,7 +720,7 @@ const Sales = (props) => {
                 setTableData(
                     props.result.map((row) => ({
                         ...row,
-                        bill_date: new Date(row.bill_date).toLocaleDateString(),
+                        bill_date: format(new Date(row.bill_date), "dd/MM/yyyy"),
                         cash: (+row.cash).toFixed(2),
                         card: (+row.card).toFixed(2),
                         upi: (+row.upi).toFixed(2),
@@ -731,7 +731,7 @@ const Sales = (props) => {
                 setTableData(
                     props.result.map((row) => ({
                         ...row,
-                        bill_date: new Date(row.bill_date).toLocaleDateString(),
+                        bill_date: format(new Date(row.bill_date), "dd/MM/yyyy"),
                         sale_qty: (+row.sale_qty).toFixed(2),
                         cost_price: (+row.cost_price).toFixed(2),
                         mrp: (+row.mrp).toFixed(2),
@@ -876,7 +876,13 @@ const Sales = (props) => {
                     setGlobalFilter={setGlobalFilter}
                     table={table}
                     tableData={tableData}
-                    reportName={"Sales Report"}
+                    reportName={`Sales Report - ${
+                        shops.find((shop) => shop.value === data.shop_id)
+                            ?.label ?? "All Shops"
+                    } - ${format(
+                        new Date(data.start_date),
+                        "dd-MM-yyyy"
+                    )} to ${format(new Date(data.end_date), "dd-MM-yyyy")}`}
                     tooltipColumns={
                         reportStyle === "details" ? ["description", "product"] : []
                     }

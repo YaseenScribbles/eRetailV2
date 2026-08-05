@@ -13,6 +13,7 @@ import Grid from "./components/Grid";
 import Toast from "./components/Toast";
 import ReactSelect from "react-select";
 import MobileNav from "./components/MobileNav";
+import { Pencil, Check, Menu } from "lucide-react";
 
 const roles = [
     {
@@ -111,9 +112,7 @@ const Users = (props) => {
                         className="btn btn--edit"
                         onClick={() => updateForm(row.original)}
                     >
-                        <svg className="edit-icon">
-                            <use xlinkHref="/images/sprite.svg#icon-new-message"></use>
-                        </svg>
+                        <Pencil className="edit-icon" />
                     </button>
                 );
             },
@@ -385,9 +384,7 @@ const Users = (props) => {
                 className="mobile-nav__btn"
                 onClick={() => setShowMobileNav(true)}
             >
-                <svg className="mobile-nav__icon">
-                    <use xlinkHref="/images/sprite.svg#icon-menu"></use>
-                </svg>
+                <Menu className="mobile-nav__icon" />
             </div>
             <MobileNav
                 show={showMobileNav}
@@ -474,9 +471,9 @@ const Users = (props) => {
                                 ...theme,
                                 colors: {
                                     ...theme.colors,
-                                    primary75: "#638663",
-                                    primary50: "#638663",
-                                    primary25: "#638663",
+                                    primary75: "color-mix(in srgb, #638663 70%, white)",
+                                    primary50: "color-mix(in srgb, #638663 45%, white)",
+                                    primary25: "color-mix(in srgb, #638663 20%, white)",
                                     primary: "#638663",
                                 },
                             })}
@@ -494,9 +491,9 @@ const Users = (props) => {
                                 ...theme,
                                 colors: {
                                     ...theme.colors,
-                                    primary75: "#638663",
-                                    primary50: "#638663",
-                                    primary25: "#638663",
+                                    primary75: "color-mix(in srgb, #638663 70%, white)",
+                                    primary50: "color-mix(in srgb, #638663 45%, white)",
+                                    primary25: "color-mix(in srgb, #638663 20%, white)",
                                     primary: "#638663",
                                 },
                             })}
@@ -514,9 +511,9 @@ const Users = (props) => {
                                 ...theme,
                                 colors: {
                                     ...theme.colors,
-                                    primary75: "#638663",
-                                    primary50: "#638663",
-                                    primary25: "#638663",
+                                    primary75: "color-mix(in srgb, #638663 70%, white)",
+                                    primary50: "color-mix(in srgb, #638663 45%, white)",
+                                    primary25: "color-mix(in srgb, #638663 20%, white)",
                                     primary: "#638663",
                                 },
                             })}
@@ -533,9 +530,9 @@ const Users = (props) => {
                                 ...theme,
                                 colors: {
                                     ...theme.colors,
-                                    primary75: "#638663",
-                                    primary50: "#638663",
-                                    primary25: "#638663",
+                                    primary75: "color-mix(in srgb, #638663 70%, white)",
+                                    primary50: "color-mix(in srgb, #638663 45%, white)",
+                                    primary25: "color-mix(in srgb, #638663 20%, white)",
                                     primary: "#638663",
                                 },
                             })}
@@ -560,9 +557,7 @@ const Users = (props) => {
                         />
                         <label htmlFor="has_invoice_report">
                             <div className="custom-checkbox">
-                                <svg className="check-icon">
-                                    <use xlinkHref="/images/sprite.svg#icon-check"></use>
-                                </svg>
+                                <Check className="check-icon" />
                             </div>
                             Invoice Report
                         </label>
@@ -581,17 +576,16 @@ const Users = (props) => {
                         />
                         <label htmlFor="api_only">
                             <div className="custom-checkbox">
-                                <svg className="check-icon">
-                                    <use xlinkHref="/images/sprite.svg#icon-check"></use>
-                                </svg>
+                                <Check className="check-icon" />
                             </div>
                             API Only
                         </label>
                     </div>
                     <div className="form__group">
-                        <button className="btn" disabled={processing}>{`${
-                            editMode ? "Update" : "Save"
-                        }`}</button>
+                        <button className="btn" disabled={processing}>
+                            <Check className="btn__icon" />
+                            {editMode ? "Update" : "Save"}
+                        </button>
                     </div>
                 </form>
                 {tableData.length > 0 && (

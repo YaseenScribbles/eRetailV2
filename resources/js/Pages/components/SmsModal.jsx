@@ -1,5 +1,6 @@
 import { useForm } from "@inertiajs/react";
 import React, { useEffect } from "react";
+import { X } from "lucide-react";
 
 const SmsModal = (props) => {
     const { data, setData, processing, post } = useForm({
@@ -51,12 +52,10 @@ const SmsModal = (props) => {
             <div className="modal__header">
                 <h4 className="heading">Test SMS</h4>
                 <div className="close-btn">
-                    <svg
+                    <X
                         className="close-icon"
                         onClick={() => props.setShow(false)}
-                    >
-                        <use xlinkHref="/images/sprite.svg#icon-cross"></use>
-                    </svg>
+                    />
                 </div>
             </div>
             <div className="modal__body">

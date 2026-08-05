@@ -5,6 +5,7 @@ import { useForm } from "@inertiajs/react";
 import ReactSelect from "react-select";
 import SmsModal from "./components/SmsModal";
 import Toast from "./components/Toast";
+import { Menu, MessageSquarePlus, MessageSquare } from "lucide-react";
 import {
     createColumnHelper,
     getCoreRowModel,
@@ -163,9 +164,7 @@ const SMS = (props) => {
                 className="mobile-nav__btn"
                 onClick={() => setShowMobileNav(true)}
             >
-                <svg className="mobile-nav__icon">
-                    <use xlinkHref="/images/sprite.svg#icon-menu"></use>
-                </svg>
+                <Menu className="mobile-nav__icon" />
             </div>
             <MobileNav
                 show={showMobileNav}
@@ -190,9 +189,9 @@ const SMS = (props) => {
                                 ...theme,
                                 colors: {
                                     ...theme.colors,
-                                    primary75: "#638663",
-                                    primary50: "#638663",
-                                    primary25: "#638663",
+                                    primary75: "color-mix(in srgb, #638663 70%, white)",
+                                    primary50: "color-mix(in srgb, #638663 45%, white)",
+                                    primary25: "color-mix(in srgb, #638663 20%, white)",
                                     primary: "#638663",
                                 },
                             })}
@@ -213,9 +212,9 @@ const SMS = (props) => {
                                 ...theme,
                                 colors: {
                                     ...theme.colors,
-                                    primary75: "#638663",
-                                    primary50: "#638663",
-                                    primary25: "#638663",
+                                    primary75: "color-mix(in srgb, #638663 70%, white)",
+                                    primary50: "color-mix(in srgb, #638663 45%, white)",
+                                    primary25: "color-mix(in srgb, #638663 20%, white)",
                                     primary: "#638663",
                                 },
                             })}
@@ -238,6 +237,7 @@ const SMS = (props) => {
                                 setShowAlert(true);
                             }}
                         >
+                            <MessageSquarePlus className="btn__icon" />
                             Send
                         </button>
                     </div>
@@ -258,6 +258,7 @@ const SMS = (props) => {
                             type="button"
                             className="btn"
                         >
+                            <MessageSquare className="btn__icon" />
                             Test
                         </button>
                     </div>

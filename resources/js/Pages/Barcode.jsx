@@ -1,30 +1,100 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Navbar from "./components/Navbar";
 import MobileNav from "./components/MobileNav";
 import { useForm } from "@inertiajs/react";
 import Toast from "./components/Toast";
-import ReactSelect from "react-select";
+import ReactSelect, { components } from "react-select";
 import Scanner from "./components/Scanner";
+import { Menu, Check, ScanLine, ChevronDown, ChevronRight } from "lucide-react";
+
+const SELECT_ALL_VALUE = "__select_all__";
+const MAX_VISIBLE_CHIPS = 3;
+
+const CollapsedMultiValue = (props) => {
+    const { index, getValue } = props;
+    const total = getValue().length;
+    if (index < MAX_VISIBLE_CHIPS) {
+        return <components.MultiValue {...props} />;
+    }
+    if (index === MAX_VISIBLE_CHIPS) {
+        return (
+            <div className="select__overflow-badge">
+                +{total - MAX_VISIBLE_CHIPS} more
+            </div>
+        );
+    }
+    return null;
+};
 
 const Barcode = (props) => {
     const [showMobileNav, setShowMobileNav] = useState(false);
     const { post, processing, data, setData } = useForm({
         barcode: "",
-        product_id: null,
+        product_ids: [],
+        include_delivery: false,
     });
     const [summary, setSummary] = useState();
-    const [stock, setStock] = useState([]);
-    const [sales, setSales] = useState([]);
     const [delivery, setDelivery] = useState([]);
+    const [locationReport, setLocationReport] = useState([]);
+    const [expandedLocationShops, setExpandedLocationProducts] = useState(
+        new Set()
+    );
+    const [productSummary, setProductSummary] = useState([]);
     const [errors, setErrors] = useState([]);
     const [products, setProducts] = useState([]);
-    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [selectedProducts, setSelectedProducts] = useState([]);
+    const [productInput, setProductInput] = useState("");
     const [barcode, setBarcode] = useState("");
     const [showScanner, setShowScanner] = useState(false);
 
+    const filteredProductOptions = useMemo(() => {
+        const query = productInput.trim().toLowerCase();
+        const matches = query
+            ? products.filter((p) => p.label.toLowerCase().includes(query))
+            : products;
+        if (matches.length === 0) return matches;
+        return [
+            { label: `Select All (${matches.length})`, value: SELECT_ALL_VALUE },
+            ...matches,
+        ];
+    }, [products, productInput]);
+
+    const locationReportGrouped = useMemo(() => {
+        const groups = new Map();
+        for (const row of locationReport) {
+            if (!groups.has(row.ShopName)) {
+                groups.set(row.ShopName, {
+                    ShopName: row.ShopName,
+                    SalesQty: 0,
+                    SalesAmount: 0,
+                    Stock: 0,
+                    products: [],
+                });
+            }
+            const group = groups.get(row.ShopName);
+            group.SalesQty += +row.SalesQty;
+            group.SalesAmount += +row.SalesAmount;
+            group.Stock += +row.Stock;
+            group.products.push(row);
+        }
+        return Array.from(groups.values());
+    }, [locationReport]);
+
+    const toggleLocationShop = (shopName) => {
+        setExpandedLocationProducts((prev) => {
+            const next = new Set(prev);
+            if (next.has(shopName)) {
+                next.delete(shopName);
+            } else {
+                next.add(shopName);
+            }
+            return next;
+        });
+    };
+
     const submitForm = (e) => {
         e.preventDefault();
-        if (!data.barcode && !data.product_id) {
+        if (!data.barcode && data.product_ids.length === 0) {
             setErrors((prev) => [...prev, "Please fill / select one"]);
             return;
         }
@@ -37,10 +107,12 @@ const Barcode = (props) => {
 
     useEffect(() => {
         if (barcode) {
-            setData({
+            setData((prev) => ({
+                ...prev,
                 barcode: barcode,
-                product_id: null,
-            });
+                product_ids: [],
+            }));
+            setSelectedProducts([]);
         }
     }, [barcode]);
 
@@ -70,14 +142,15 @@ const Barcode = (props) => {
         if (props.summary) {
             setSummary(props.summary[0]);
         }
-        if (props.stock) {
-            setStock(props.stock);
-        }
-        if (props.sales) {
-            setSales(props.sales);
-        }
         if (props.delivery) {
             setDelivery(props.delivery);
+        }
+        if (props.location_report) {
+            setLocationReport(props.location_report);
+            setExpandedLocationProducts(new Set());
+        }
+        if (props.product_summary) {
+            setProductSummary(props.product_summary);
         }
     }, [props]);
 
@@ -91,9 +164,7 @@ const Barcode = (props) => {
                 className="mobile-nav__btn"
                 onClick={() => setShowMobileNav(true)}
             >
-                <svg className="mobile-nav__icon">
-                    <use xlinkHref="/images/sprite.svg#icon-menu"></use>
-                </svg>
+                <Menu className="mobile-nav__icon" />
             </div>
             <MobileNav
                 show={showMobileNav}
@@ -118,11 +189,12 @@ const Barcode = (props) => {
                         id="universal-input"
                         value={data.barcode}
                         onChange={(e) => {
-                            setData({
+                            setData((prev) => ({
+                                ...prev,
                                 barcode: e.target.value,
-                                product_id: null,
-                            });
-                            setSelectedProduct(null);
+                                product_ids: [],
+                            }));
+                            setSelectedProducts([]);
                         }}
                     />
                     <label htmlFor="universal-input" className="label">
@@ -130,27 +202,70 @@ const Barcode = (props) => {
                     </label>
                     <ReactSelect
                         className="select"
-                        options={products}
-                        value={selectedProduct}
-                        onChange={(e) => {
-                            if (e) {
-                                setData({ barcode: "", product_id: +e.value });
-                                setSelectedProduct(e);
+                        isMulti
+                        options={filteredProductOptions}
+                        inputValue={productInput}
+                        onInputChange={(val, meta) => {
+                            if (meta.action === "input-change") {
+                                setProductInput(val);
                             }
                         }}
-                        placeholder="Select Product"
+                        filterOption={() => true}
+                        components={{ MultiValue: CollapsedMultiValue }}
+                        value={selectedProducts}
+                        onChange={(selected) => {
+                            const chosen = selected || [];
+                            const isSelectAll = chosen.some(
+                                (o) => o.value === SELECT_ALL_VALUE
+                            );
+                            let next;
+                            if (isSelectAll) {
+                                const matches = filteredProductOptions.filter(
+                                    (o) => o.value !== SELECT_ALL_VALUE
+                                );
+                                const merged = [...selectedProducts, ...matches];
+                                next = merged.filter(
+                                    (opt, idx) =>
+                                        merged.findIndex((o) => o.value === opt.value) ===
+                                        idx
+                                );
+                            } else {
+                                next = chosen;
+                            }
+                            setSelectedProducts(next);
+                            setData((prev) => ({
+                                ...prev,
+                                barcode: "",
+                                product_ids: next.map((o) => +o.value),
+                            }));
+                        }}
+                        placeholder="Select Product(s)"
                         theme={(theme) => ({
                             ...theme,
                             colors: {
                                 ...theme.colors,
-                                primary75: "#638663",
-                                primary50: "#638663",
-                                primary25: "#638663",
+                                primary75: "color-mix(in srgb, #638663 70%, white)",
+                                primary50: "color-mix(in srgb, #638663 45%, white)",
+                                primary25: "color-mix(in srgb, #638663 20%, white)",
                                 primary: "#638663",
                             },
                         })}
                     />
+                    <label className="p-s-g__form-checkbox">
+                        <input
+                            type="checkbox"
+                            checked={data.include_delivery}
+                            onChange={(e) =>
+                                setData((prev) => ({
+                                    ...prev,
+                                    include_delivery: e.target.checked,
+                                }))
+                            }
+                        />
+                        Transaction Logs
+                    </label>
                     <button className="btn" type="submit">
+                        <Check className="btn__icon" />
                         Go
                     </button>
                     <button
@@ -158,9 +273,200 @@ const Barcode = (props) => {
                         type="button"
                         onClick={() => setShowScanner(true)}
                     >
+                        <ScanLine className="btn__icon" />
                         Scan
                     </button>
                 </form>
+                {productSummary && productSummary.length > 0 && (
+                    <div className="p-s-g__products">
+                        <table>
+                            <caption>Product Summary</caption>
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Purchase Qty</th>
+                                    <th>Sales Qty</th>
+                                    <th>Sales Amount</th>
+                                    <th>Stock</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {productSummary.map((e, i) => (
+                                    <tr key={i}>
+                                        <td>{e.Catalog}</td>
+                                        <td>{(+e.PurchaseQty).toFixed(2)}</td>
+                                        <td>{(+e.SalesQty).toFixed(2)}</td>
+                                        <td>{(+e.SalesAmount).toFixed(2)}</td>
+                                        <td>{(+e.Stock).toFixed(2)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        {productSummary
+                                            .reduce(
+                                                (acc, curr) =>
+                                                    acc + +curr.PurchaseQty,
+                                                0
+                                            )
+                                            .toFixed(2)}
+                                    </td>
+                                    <td>
+                                        {productSummary
+                                            .reduce(
+                                                (acc, curr) => acc + +curr.SalesQty,
+                                                0
+                                            )
+                                            .toFixed(2)}
+                                    </td>
+                                    <td>
+                                        {productSummary
+                                            .reduce(
+                                                (acc, curr) =>
+                                                    acc + +curr.SalesAmount,
+                                                0
+                                            )
+                                            .toFixed(2)}
+                                    </td>
+                                    <td>
+                                        {productSummary
+                                            .reduce(
+                                                (acc, curr) => acc + +curr.Stock,
+                                                0
+                                            )
+                                            .toFixed(2)}
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                )}
+                {locationReport && locationReport.length > 0 && (
+                    <div className="p-s-g__location">
+                        <table>
+                            <caption>Location Report</caption>
+                            <thead>
+                                <tr>
+                                    <th>Shop / Product</th>
+                                    <th>Sales Qty</th>
+                                    <th>Sales Amount</th>
+                                    <th>Stock</th>
+                                    <th>Days Since First Delivery</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {locationReportGrouped.map((group) => {
+                                    const isExpanded =
+                                        expandedLocationShops.has(
+                                            group.ShopName
+                                        );
+                                    return (
+                                        <React.Fragment key={group.ShopName}>
+                                            <tr
+                                                className="location-report__group-row"
+                                                onClick={() =>
+                                                    toggleLocationShop(
+                                                        group.ShopName
+                                                    )
+                                                }
+                                            >
+                                                <td>
+                                                    <span className="location-report__toggle">
+                                                        {isExpanded ? (
+                                                            <ChevronDown className="location-report__chevron" />
+                                                        ) : (
+                                                            <ChevronRight className="location-report__chevron" />
+                                                        )}
+                                                        {group.ShopName}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    {group.SalesQty.toFixed(2)}
+                                                </td>
+                                                <td>
+                                                    {group.SalesAmount.toFixed(
+                                                        2
+                                                    )}
+                                                </td>
+                                                <td>
+                                                    {group.Stock.toFixed(2)}
+                                                </td>
+                                                <td></td>
+                                            </tr>
+                                            {isExpanded &&
+                                                group.products.map(
+                                                    (product, i) => (
+                                                        <tr
+                                                            key={i}
+                                                            className="location-report__product-row"
+                                                        >
+                                                            <td>
+                                                                {
+                                                                    product.Catalog
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {(+product.SalesQty).toFixed(
+                                                                    2
+                                                                )}
+                                                            </td>
+                                                            <td>
+                                                                {(+product.SalesAmount).toFixed(
+                                                                    2
+                                                                )}
+                                                            </td>
+                                                            <td>
+                                                                {(+product.Stock).toFixed(
+                                                                    2
+                                                                )}
+                                                            </td>
+                                                            <td>
+                                                                {product.DaysSinceFirstDelivery ??
+                                                                    "-"}
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                )}
+                                        </React.Fragment>
+                                    );
+                                })}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        {locationReport
+                                            .reduce(
+                                                (acc, curr) => acc + +curr.SalesQty,
+                                                0
+                                            )
+                                            .toFixed(2)}
+                                    </td>
+                                    <td>
+                                        {locationReport
+                                            .reduce(
+                                                (acc, curr) =>
+                                                    acc + +curr.SalesAmount,
+                                                0
+                                            )
+                                            .toFixed(2)}
+                                    </td>
+                                    <td>
+                                        {locationReport
+                                            .reduce(
+                                                (acc, curr) => acc + +curr.Stock,
+                                                0
+                                            )
+                                            .toFixed(2)}
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                )}
                 {summary && summary.Barcode && (
                     <div className="p-s-g__1">
                         <table>
@@ -292,93 +598,6 @@ const Barcode = (props) => {
                                     </td>
                                 </tr>
                             </tbody>
-                        </table>
-                    </div>
-                )}
-                {stock && stock.length > 0 && (
-                    <div className="p-s-g__3">
-                        <table>
-                            <caption>Stock</caption>
-                            <thead>
-                                <tr>
-                                    <th>Shop</th>
-                                    <th>Stock</th>
-                                    <th>Cost</th>
-                                    <th>MRP</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {stock.map((e, i) => (
-                                    <tr key={i}>
-                                        <td>{e.ShopName}</td>
-                                        <td>{(+e.stock).toFixed(2)}</td>
-                                        <td>{(+e.CostPrice).toFixed(2)}</td>
-                                        <td>{(+e.RetailPrice).toFixed(2)}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td></td>
-                                    <td>
-                                        {stock
-                                            .reduce(
-                                                (acc, curr) =>
-                                                    acc + +curr.stock,
-                                                0
-                                            )
-                                            .toFixed(2)}
-                                    </td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                )}
-                {sales && sales.length > 0 && (
-                    <div className="p-s-g__4">
-                        <table>
-                            <caption>Sales</caption>
-                            <thead>
-                                <tr>
-                                    <th>Shop</th>
-                                    <th>Sales</th>
-                                    <th>Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {sales.map((e, i) => (
-                                    <tr key={i}>
-                                        <td>{e.ShopName}</td>
-                                        <td>{(+e.Sales).toFixed(2)}</td>
-                                        <td>{(+e.Amount).toFixed(2)}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td></td>
-                                    <td>
-                                        {sales
-                                            .reduce(
-                                                (acc, curr) =>
-                                                    acc + +curr.Sales,
-                                                0
-                                            )
-                                            .toFixed(2)}
-                                    </td>
-                                    <td>
-                                        {sales
-                                            .reduce(
-                                                (acc, curr) =>
-                                                    acc + +curr.Amount,
-                                                0
-                                            )
-                                            .toFixed(2)}
-                                    </td>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
                 )}

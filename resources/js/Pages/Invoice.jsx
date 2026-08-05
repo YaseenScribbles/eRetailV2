@@ -16,6 +16,7 @@ import axios from "axios";
 import Grid from "./components/Grid";
 import Toast from "./components/Toast";
 import MobileNav from "./components/MobileNav";
+import { Menu, Calendar, Check } from "lucide-react";
 
 const Invoice = (props) => {
     const { data, setData, processing, post } = useForm({
@@ -323,9 +324,7 @@ const Invoice = (props) => {
                 className="mobile-nav__btn"
                 onClick={() => setShowMobileNav(true)}
             >
-                <svg className="mobile-nav__icon">
-                    <use xlinkHref="/images/sprite.svg#icon-menu"></use>
-                </svg>
+                <Menu className="mobile-nav__icon" />
             </div>
             <MobileNav
                 show={showMobileNav}
@@ -361,9 +360,9 @@ const Invoice = (props) => {
                                 ...theme,
                                 colors: {
                                     ...theme.colors,
-                                    primary75: "#638663",
-                                    primary50: "#638663",
-                                    primary25: "#638663",
+                                    primary75: "color-mix(in srgb, #638663 70%, white)",
+                                    primary50: "color-mix(in srgb, #638663 45%, white)",
+                                    primary25: "color-mix(in srgb, #638663 20%, white)",
                                     primary: "#638663",
                                 },
                             })}
@@ -384,9 +383,9 @@ const Invoice = (props) => {
                                 ...theme,
                                 colors: {
                                     ...theme.colors,
-                                    primary75: "#638663",
-                                    primary50: "#638663",
-                                    primary25: "#638663",
+                                    primary75: "color-mix(in srgb, #638663 70%, white)",
+                                    primary50: "color-mix(in srgb, #638663 45%, white)",
+                                    primary25: "color-mix(in srgb, #638663 20%, white)",
                                     primary: "#638663",
                                 },
                             })}
@@ -394,13 +393,24 @@ const Invoice = (props) => {
                     </div>
                     <div className="form__group form__group--date">
                         <button
-                            className="btn"
+                            type="button"
+                            className="btn btn--daterange"
                             onClick={(e) => {
                                 e.preventDefault();
                                 setShowRange(!showRange);
                             }}
                         >
-                            Range picker
+                            <Calendar className="btn__icon" />
+                            {format(duration[0].startDate, "dd/MM/yyyy") ===
+                            format(duration[0].endDate, "dd/MM/yyyy")
+                                ? format(duration[0].startDate, "dd/MM/yyyy")
+                                : `${format(
+                                      duration[0].startDate,
+                                      "dd/MM/yyyy"
+                                  )} - ${format(
+                                      duration[0].endDate,
+                                      "dd/MM/yyyy"
+                                  )}`}
                         </button>
                         <DateRangePicker
                             className={`date-range ${showRange ? " show" : ""}`}
@@ -418,6 +428,7 @@ const Invoice = (props) => {
                             type="submit"
                             className="btn"
                         >
+                            <Check className="btn__icon" />
                             Go
                         </button>
                     </div>

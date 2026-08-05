@@ -1,3 +1,5 @@
+@use "sass:color";
+
 //colors
 // $color-primary: #B07087;
 // $color-secondary: #C78283;
@@ -13,4 +15,134 @@ $color-white: #F2F5F2;
 $outline: 2px solid $color-primary;
 $outline-thin: 1px solid $color-secondary;
 
+// premium design tokens
+$radius-sm: 0.5rem;
+$radius-md: 0.8rem;
+$radius-lg: 1.2rem;
+
+$shadow-xs: 0 0.1rem 0.3rem rgba(17, 24, 21, 0.05);
+$shadow-sm: 0 0.4rem 1.2rem rgba(17, 24, 21, 0.07);
+$shadow-md: 0 0.8rem 2rem rgba(17, 24, 21, 0.1);
+$shadow-lg: 0 1.5rem 3.5rem rgba(17, 24, 21, 0.16);
+
+$ease: cubic-bezier(0.4, 0, 0.2, 1);
+$transition-base: all 0.2s $ease;
+
+$border-subtle: 1px solid color-mix(in srgb, $color-primary 16%, transparent);
+$focus-ring: 0 0 0 0.35rem color-mix(in srgb, $color-primary 18%, transparent);
+
+// layout tokens
+$sidebar-width: 25rem;
+$sidebar-width-collapsed: 7rem;
+$mobile-breakpoint: 37.5em;
+$table-caption-height: 4.6rem;
+
+// layered surfaces — page canvas sits behind elevated white cards/tables
+$color-page-bg: color-mix(in srgb, $color-secondary 7%, #fff 93%);
+$color-sidebar-bg: color-mix(in srgb, $color-primary 82%, #000 18%);
+$color-sidebar-bg-hover: color-mix(in srgb, #fff 8%, $color-sidebar-bg 92%);
+
+// soft card-header look (table captions)
+$color-caption-bg: color-mix(in srgb, $color-primary 32%, #fff 68%);
+$color-caption-text: color.adjust($color-primary, $lightness: -22%);
+
+// shared premium input look — @include from any .input rule,
+// then add page-specific layout (flex/height/padding) after it
+@mixin premium-input {
+    display: block;
+    width: 100%;
+    font-family: inherit;
+    font-size: 1.5rem;
+    color: #333;
+    background-color: #fff;
+    border: $border-subtle;
+    outline: none;
+    border-radius: $radius-sm;
+    padding: 1.2rem 1.5rem;
+    min-height: 5.2rem;
+    box-shadow: $shadow-xs;
+    transition: $transition-base;
+
+    &::placeholder {
+        color: #999;
+    }
+
+    &:hover {
+        border-color: color.adjust($color-primary, $lightness: 15%);
+    }
+
+    &:focus {
+        border-color: $color-primary;
+        box-shadow: $focus-ring;
+    }
+}
+
+// shared premium look for react-select — makes it match our inputs/cards
+// instead of the library's own defaults (font, borders, menu, options, icons)
+@mixin premium-select {
+    font-family: inherit;
+
+    > [class$="control"] {
+        border: $border-subtle;
+        border-radius: $radius-sm;
+        box-shadow: $shadow-xs;
+        transition: $transition-base;
+
+        &:hover {
+            border-color: color.adjust($color-primary, $lightness: 15%);
+        }
+    }
+
+    > [class$="control"][class*="focused"] {
+        border-color: $color-primary;
+        box-shadow: $focus-ring;
+    }
+
+    [class$="-ValueContainer"] {
+        font-size: inherit;
+    }
+
+    [class$="-placeholder"] {
+        color: #999;
+    }
+
+    [class$="-singleValue"],
+    [class$="-Input"],
+    input {
+        color: #333;
+    }
+
+    [class$="-indicatorSeparator"] {
+        background-color: color-mix(in srgb, $color-primary 15%, transparent);
+    }
+
+    [class$="-dropdownIndicator"],
+    [class$="-clearIndicator"] {
+        color: color-mix(in srgb, $color-primary 55%, transparent);
+        transition: $transition-base;
+
+        &:hover {
+            color: $color-primary;
+        }
+    }
+
+    [class$="-menu"] {
+        overflow: hidden;
+        border-radius: $radius-sm;
+        box-shadow: $shadow-md;
+        border: 1px solid color-mix(in srgb, $color-primary 10%, transparent);
+        font-family: inherit;
+        z-index: 20;
+    }
+
+    [class$="-option"] {
+        font-family: inherit;
+        cursor: pointer;
+    }
+
+    [class$="-multiValue"] {
+        border-radius: $radius-sm;
+        background-color: color-mix(in srgb, $color-primary 14%, transparent);
+    }
+}
 

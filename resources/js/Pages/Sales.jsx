@@ -24,6 +24,7 @@ import AlertModal from "./components/AlertModal";
 import PaymentModal from "./components/PaymentModal";
 import axios from "axios";
 import BillDateModal from "./components/BillDateModal";
+import { Menu, Calendar, Check, IndianRupee, XCircle } from "lucide-react";
 
 const reportOptions = [
     {
@@ -177,8 +178,9 @@ const Sales = (props) => {
                       cell: ({ row }) => {
                           return (
                               <div className="d-flex">
-                                  <svg
+                                  <Calendar
                                       className="date-icon"
+                                      title="Change bill date"
                                       onClick={() => {
                                           setBillDetail({
                                               bill_id: row.original.bill_id,
@@ -187,11 +189,10 @@ const Sales = (props) => {
                                           setBillNo(row.original.bill_no)
                                           setShowBillDate(true);
                                       }}
-                                  >
-                                      <use xlinkHref="/images/sprite.svg#icon-calendar"></use>
-                                  </svg>
-                                  <svg
+                                  />
+                                  <IndianRupee
                                       className="payment-icon"
+                                      title="Edit payment"
                                       onClick={async () => {
                                           setLoading(true);
                                           const {
@@ -205,19 +206,16 @@ const Sales = (props) => {
                                           setShowPayment(true);
                                           setLoading(false);
                                       }}
-                                  >
-                                      <use xlinkHref="/images/sprite.svg#icon-inr"></use>
-                                  </svg>
-                                  <svg
+                                  />
+                                  <XCircle
                                       className="delete-icon"
+                                      title="Delete bill"
                                       onClick={() => {
                                           setDeleteId(row.original.bill_id);
                                           setBillNo(row.original.bill_no)
                                           setShowAlert(true);
                                       }}
-                                  >
-                                      <use xlinkHref="/images/sprite.svg#icon-circle-with-cross"></use>
-                                  </svg>
+                                  />
                               </div>
                           );
                       },
@@ -772,9 +770,7 @@ const Sales = (props) => {
                 className="mobile-nav__btn"
                 onClick={() => setShowMobileNav(true)}
             >
-                <svg className="mobile-nav__icon">
-                    <use xlinkHref="/images/sprite.svg#icon-menu"></use>
-                </svg>
+                <Menu className="mobile-nav__icon" />
             </div>
             <MobileNav
                 show={showMobileNav}
@@ -809,9 +805,9 @@ const Sales = (props) => {
                                 ...theme,
                                 colors: {
                                     ...theme.colors,
-                                    primary75: "#638663",
-                                    primary50: "#638663",
-                                    primary25: "#638663",
+                                    primary75: "color-mix(in srgb, #638663 70%, white)",
+                                    primary50: "color-mix(in srgb, #638663 45%, white)",
+                                    primary25: "color-mix(in srgb, #638663 20%, white)",
                                     primary: "#638663",
                                 },
                             })}
@@ -832,9 +828,9 @@ const Sales = (props) => {
                                 ...theme,
                                 colors: {
                                     ...theme.colors,
-                                    primary75: "#638663",
-                                    primary50: "#638663",
-                                    primary25: "#638663",
+                                    primary75: "color-mix(in srgb, #638663 70%, white)",
+                                    primary50: "color-mix(in srgb, #638663 45%, white)",
+                                    primary25: "color-mix(in srgb, #638663 20%, white)",
                                     primary: "#638663",
                                 },
                             })}
@@ -842,13 +838,24 @@ const Sales = (props) => {
                     </div>
                     <div className="form__group form__group--date">
                         <button
-                            className="btn"
+                            type="button"
+                            className="btn btn--daterange"
                             onClick={(e) => {
                                 e.preventDefault();
                                 setShowRange(!showRange);
                             }}
                         >
-                            Range picker
+                            <Calendar className="btn__icon" />
+                            {format(duration[0].startDate, "dd/MM/yyyy") ===
+                            format(duration[0].endDate, "dd/MM/yyyy")
+                                ? format(duration[0].startDate, "dd/MM/yyyy")
+                                : `${format(
+                                      duration[0].startDate,
+                                      "dd/MM/yyyy"
+                                  )} - ${format(
+                                      duration[0].endDate,
+                                      "dd/MM/yyyy"
+                                  )}`}
                         </button>
                         <DateRangePicker
                             className={`date-range ${showRange ? " show" : ""}`}
@@ -867,6 +874,7 @@ const Sales = (props) => {
                             type="submit"
                             className="btn"
                         >
+                            <Check className="btn__icon" />
                             Go
                         </button>
                     </div>

@@ -1,11 +1,20 @@
-import { useForm } from "@inertiajs/react";
+import { useForm, usePage } from "@inertiajs/react";
 import { useEffect } from "react";
+import { ShoppingBag, LogOut, X } from "lucide-react";
+import getNavItems from "./navItems";
 
 const MobileNav = ({ show, setShowMobileNav }) => {
+    const { url } = usePage();
     const { get, post, processing } = useForm();
+
     const logout = () => {
         post("/logout");
         localStorage.removeItem("eRetail_user");
+    };
+
+    const navigate = (href) => {
+        get(href);
+        setShowMobileNav(false);
     };
 
     useEffect(() => {
@@ -26,55 +35,36 @@ const MobileNav = ({ show, setShowMobileNav }) => {
                 <div
                     className={`page__loader ${processing ? "loading" : ""}`}
                 ></div>
-                <div className="nav__item" onClick={() => get("/dashboard")}>
-                    Dashboard
+                <div className="mobile-nav__brand">
+                    <ShoppingBag className="mobile-nav__brand-icon" />
+                    <span>eRetail</span>
                 </div>
-                <div className="nav__item" onClick={() => get("/barcode")}>
-                    Search
-                </div>
-                <div className="nav__item" onClick={() => get("/sales")}>
-                    Sales
-                </div>
-                <div className="nav__item" onClick={() => get("/received")}>
-                    Received
-                </div>
-                <div className="nav__item" onClick={() => get("/stock")}>
-                    Stock
-                </div>
-                {JSON.parse(localStorage.getItem("eRetail_user"))
-                    ?.has_invoice_report === "1" && (
-                    <div className="nav__item" onClick={() => get("/invoice")}>
-                        Invoice
+                <div className="mobile-nav__list">
+                    {getNavItems().map((item) => (
+                        <div
+                            key={item.href}
+                            className={`nav__item ${
+                                url === item.href ? "nav__item--active" : ""
+                            }`}
+                            onClick={() => navigate(item.href)}
+                        >
+                            <item.icon className="mobile-nav__item-icon" />
+                            <span>{item.label}</span>
+                        </div>
+                    ))}
+                    <div
+                        className="nav__item nav__item--logout"
+                        onClick={logout}
+                    >
+                        <LogOut className="mobile-nav__item-icon" />
+                        <span>Logout</span>
                     </div>
-                )}
-                <div className="nav__item" onClick={() => get("/cvs")}>
-                    CVS
-                </div>
-                <div className="nav__item" onClick={() => get("/offer")}>
-                    OFFER
-                </div>
-                {JSON.parse(localStorage.getItem("eRetail_user"))?.role ===
-                    "admin" && (
-                    <div className="nav__item" onClick={() => get("/sms")}>
-                        SMS
-                    </div>
-                )}
-                {JSON.parse(localStorage.getItem("eRetail_user"))?.role ===
-                    "admin" && (
-                    <div className="nav__item" onClick={() => get("/users")}>
-                        Users
-                    </div>
-                )}
-                <div className="nav__item" onClick={logout}>
-                    Logout
                 </div>
                 <div
                     className="close-btn"
                     onClick={() => setShowMobileNav(false)}
                 >
-                    <svg className="close-icon">
-                        <use xlinkHref="/images/sprite.svg#icon-cross"></use>
-                    </svg>
+                    <X className="close-icon" />
                 </div>
             </div>
         </>

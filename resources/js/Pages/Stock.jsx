@@ -15,6 +15,7 @@ import {
 import Grid from "./components/Grid";
 import Toast from "./components/Toast";
 import MobileNav from "./components/MobileNav";
+import { Menu, Check } from "lucide-react";
 
 const reportOptions = [
     {
@@ -342,9 +343,7 @@ const Stock = (props) => {
                 className="mobile-nav__btn"
                 onClick={() => setShowMobileNav(true)}
             >
-                <svg className="mobile-nav__icon">
-                    <use xlinkHref="/images/sprite.svg#icon-menu"></use>
-                </svg>
+                <Menu className="mobile-nav__icon" />
             </div>
             <MobileNav
                 show={showMobileNav}
@@ -377,9 +376,9 @@ const Stock = (props) => {
                                 ...theme,
                                 colors: {
                                     ...theme.colors,
-                                    primary75: "#638663",
-                                    primary50: "#638663",
-                                    primary25: "#638663",
+                                    primary75: "color-mix(in srgb, #638663 70%, white)",
+                                    primary50: "color-mix(in srgb, #638663 45%, white)",
+                                    primary25: "color-mix(in srgb, #638663 20%, white)",
                                     primary: "#638663",
                                 },
                             })}
@@ -400,9 +399,9 @@ const Stock = (props) => {
                                 ...theme,
                                 colors: {
                                     ...theme.colors,
-                                    primary75: "#638663",
-                                    primary50: "#638663",
-                                    primary25: "#638663",
+                                    primary75: "color-mix(in srgb, #638663 70%, white)",
+                                    primary50: "color-mix(in srgb, #638663 45%, white)",
+                                    primary25: "color-mix(in srgb, #638663 20%, white)",
                                     primary: "#638663",
                                 },
                             })}
@@ -414,6 +413,7 @@ const Stock = (props) => {
                             type="submit"
                             className="btn"
                         >
+                            <Check className="btn__icon" />
                             Go
                         </button>
                     </div>

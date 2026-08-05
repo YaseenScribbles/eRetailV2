@@ -27,11 +27,14 @@
 
     &__card {
         background-color: rgba($color-secondary, 0.7);
+        backdrop-filter: blur(1.2rem);
+        -webkit-backdrop-filter: blur(1.2rem);
         height: 55vh;
         width: 20vw;
         padding: 5rem 3rem;
-        border-radius: 1rem;
-        box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.3);
+        border-radius: $radius-lg;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        box-shadow: $shadow-lg;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -88,7 +91,7 @@
     }
 
     .app-name {
-        font-family: "Agdasima", sans-serif;
+        font-family: "Sora", sans-serif;
         font-weight: 700;
         font-size: 3.5rem;
         letter-spacing: 1px;
@@ -126,20 +129,15 @@
         width: 100%;
 
         .input {
-            display: block;
-            color: #333;
-            padding: 0.5rem 1rem;
+            @include premium-input;
             border: none;
-            border-radius: 0.5rem;
             margin-bottom: 0.5rem;
-            font-family: inherit;
-            font-size: 1.5rem;
             height: 5rem;
-            width: 100%;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-            transition: all 0.2s;
+            box-shadow: $shadow-sm;
+
             &:focus {
-                outline: $outline;
+                border: none;
+                box-shadow: $shadow-sm, $focus-ring;
             }
         }
 

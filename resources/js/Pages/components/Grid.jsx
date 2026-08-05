@@ -1,6 +1,14 @@
 import * as XLSX from "xlsx";
 import { flexRender } from "@tanstack/react-table"; // or wherever it's coming from
 import { format, parse } from "date-fns";
+import {
+    ChevronsUpDown,
+    ChevronsLeft,
+    ChevronLeft,
+    ChevronRight,
+    ChevronsRight,
+    Download,
+} from "lucide-react";
 
 function ColumnFilter({ column }) {
     const columnFilterValue = column.getFilterValue() ?? "";
@@ -109,9 +117,7 @@ const Grid = ({
                                             {!excludeSortingColumns.includes(
                                                 header.column.id
                                             ) && (
-                                                <svg className="sort-icon">
-                                                    <use xlinkHref="/images/sprite.svg#icon-select-arrows"></use>
-                                                </svg>
+                                                <ChevronsUpDown className="sort-icon" />
                                             )}
                                         </div>
                                         {isColumnFiltersEnabled &&
@@ -199,9 +205,7 @@ const Grid = ({
                                 disabled={!table.getCanPreviousPage()}
                                 onClick={() => table.setPageIndex(0)}
                             >
-                                <svg className="pagination__icon">
-                                    <use xlinkHref="/images/sprite.svg#icon-chevrons-left"></use>
-                                </svg>
+                                <ChevronsLeft className="pagination__icon" />
                             </button>
                         </li>
                         <li className="pagination__item">
@@ -210,9 +214,7 @@ const Grid = ({
                                 disabled={!table.getCanPreviousPage()}
                                 onClick={() => table.previousPage()}
                             >
-                                <svg className="pagination__icon">
-                                    <use xlinkHref="/images/sprite.svg#icon-chevron-left"></use>
-                                </svg>
+                                <ChevronLeft className="pagination__icon" />
                             </button>
                         </li>
                         <li className="pagination__item">
@@ -239,9 +241,7 @@ const Grid = ({
                                 disabled={!table.getCanNextPage()}
                                 onClick={() => table.nextPage()}
                             >
-                                <svg className="pagination__icon">
-                                    <use xlinkHref="/images/sprite.svg#icon-chevron-right"></use>
-                                </svg>
+                                <ChevronRight className="pagination__icon" />
                             </button>
                         </li>
                         <li className="pagination__item">
@@ -252,9 +252,7 @@ const Grid = ({
                                     table.setPageIndex(table.getPageCount() - 1)
                                 }
                             >
-                                <svg className="pagination__icon">
-                                    <use xlinkHref="/images/sprite.svg#icon-chevrons-right"></use>
-                                </svg>
+                                <ChevronsRight className="pagination__icon" />
                             </button>
                         </li>
                         <li className="pagination__item">
@@ -265,9 +263,7 @@ const Grid = ({
                                     handleExport(tableData, reportName)
                                 }
                             >
-                                <svg className="download-icon">
-                                    <use xlinkHref="/images/sprite.svg#icon-download"></use>
-                                </svg>
+                                <Download className="download-icon" />
                             </button>
                         </li>
                     </ul>

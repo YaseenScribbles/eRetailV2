@@ -18,6 +18,7 @@ import MobileNav from "./components/MobileNav";
 import axios from "axios";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getSalesPersonSummary, getStockSummary } from "./Apis/Dashboard";
+import { Menu, Calendar, Check } from "lucide-react";
 // import { router } from "@inertiajs/react";
 
 const Dashboard = (props) => {
@@ -211,9 +212,7 @@ const Dashboard = (props) => {
                     touchAction: "none",
                 }}
             >
-                <svg className="mobile-nav__icon">
-                    <use xlinkHref="/images/sprite.svg#icon-menu"></use>
-                </svg>
+                <Menu className="mobile-nav__icon" />
             </div>
             <MobileNav
                 show={showMobileNav}
@@ -230,6 +229,7 @@ const Dashboard = (props) => {
                                 setShowRange(!showRange);
                             }}
                         >
+                            <Calendar className="btn__icon" />
                             Range
                         </button>
                         <button
@@ -246,6 +246,7 @@ const Dashboard = (props) => {
                                 });
                             }}
                         >
+                            <Check className="btn__icon" />
                             Go
                         </button>
                     </div>

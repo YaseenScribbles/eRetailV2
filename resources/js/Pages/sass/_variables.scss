@@ -6,10 +6,21 @@
 // $color-bg: #F3D9DC;
 // $color-white: #F2F5F2;
 
-$color-primary: #638663;
-$color-secondary: #AAC0AA;
-$color-bg: #F3D9DC;
+$color-primary: #6B3B42;
+$color-secondary: #7E6459;
+$color-accent: #C4A05F;
 $color-white: #F2F5F2;
+
+// text scale — replaces hardcoded #333 / #999 previously sprinkled across mixins
+$color-text-heading: #2B1F21;
+$color-text-body: #5A4749;
+$color-text-muted: #93807F;
+$color-border: #E8DEDD;
+
+// status colors — kept clearly separate in hue from primary/secondary/accent
+$color-success: #2F7D5C;
+$color-warning: #BD6F3C;
+$color-danger: #BA4A3C;
 
 //tools
 $outline: 2px solid $color-primary;
@@ -28,7 +39,7 @@ $shadow-lg: 0 1.5rem 3.5rem rgba(17, 24, 21, 0.16);
 $ease: cubic-bezier(0.4, 0, 0.2, 1);
 $transition-base: all 0.2s $ease;
 
-$border-subtle: 1px solid color-mix(in srgb, $color-primary 16%, transparent);
+$border-subtle: 1px solid $color-border;
 $focus-ring: 0 0 0 0.35rem color-mix(in srgb, $color-primary 18%, transparent);
 
 // layout tokens
@@ -38,13 +49,14 @@ $mobile-breakpoint: 37.5em;
 $table-caption-height: 4.6rem;
 
 // layered surfaces — page canvas sits behind elevated white cards/tables
-$color-page-bg: color-mix(in srgb, $color-secondary 7%, #fff 93%);
-$color-sidebar-bg: color-mix(in srgb, $color-primary 82%, #000 18%);
+$color-page-bg: #FAF6F3;
+$color-sidebar-bg: #522C32;
 $color-sidebar-bg-hover: color-mix(in srgb, #fff 8%, $color-sidebar-bg 92%);
 
-// soft card-header look (table captions)
-$color-caption-bg: color-mix(in srgb, $color-primary 32%, #fff 68%);
-$color-caption-text: color.adjust($color-primary, $lightness: -22%);
+// soft card-header look (table captions) — secondary-tinted, not primary-tinted,
+// so the header reads as a real band instead of a pale wash
+$color-caption-bg: #B8AAA4;
+$color-caption-text: $color-text-heading;
 
 // shared premium input look — @include from any .input rule,
 // then add page-specific layout (flex/height/padding) after it
@@ -52,19 +64,19 @@ $color-caption-text: color.adjust($color-primary, $lightness: -22%);
     display: block;
     width: 100%;
     font-family: inherit;
-    font-size: 1.5rem;
-    color: #333;
+    font-size: 1.3rem;
+    color: $color-text-body;
     background-color: #fff;
     border: $border-subtle;
     outline: none;
     border-radius: $radius-sm;
-    padding: 1.2rem 1.5rem;
-    min-height: 5.2rem;
+    padding: 0.9rem 1.2rem;
+    min-height: 4.4rem;
     box-shadow: $shadow-xs;
     transition: $transition-base;
 
     &::placeholder {
-        color: #999;
+        color: $color-text-muted;
     }
 
     &:hover {
@@ -103,13 +115,13 @@ $color-caption-text: color.adjust($color-primary, $lightness: -22%);
     }
 
     [class$="-placeholder"] {
-        color: #999;
+        color: $color-text-muted;
     }
 
     [class$="-singleValue"],
     [class$="-Input"],
     input {
-        color: #333;
+        color: $color-text-body;
     }
 
     [class$="-indicatorSeparator"] {

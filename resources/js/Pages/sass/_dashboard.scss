@@ -82,7 +82,6 @@
 
     .cell {
         width: 100%;
-        min-height: 20rem;
         background-color: #fff;
         border-radius: $radius-lg;
         box-shadow: $shadow-sm;
@@ -99,6 +98,7 @@
         // }
 
         &.stock {
+            min-height: 20rem;
             background-color: #fff;
             display: flex;
             justify-content: center;
@@ -196,8 +196,8 @@
         }
 
         thead {
-            background-color: $color-caption-bg;
-            color: $color-caption-text;
+            background-color: $color-primary;
+            color: $color-white;
         }
         th {
             position: sticky;
@@ -208,11 +208,10 @@
             font-weight: 600;
             border-bottom: 1px solid
                 color-mix(in srgb, $color-primary 15%, transparent);
-            background-color: $color-caption-bg;
+            background-color: $color-primary;
 
             &:not(:last-child) {
-                border-right: 1px solid
-                    color-mix(in srgb, $color-primary 15%, transparent);
+                border-right: 1px solid rgba(255, 255, 255, 0.15);
             }
         }
         tbody {
@@ -257,6 +256,12 @@
             }
         }
         tfoot {
+            // table-footer-group has notoriously unreliable position:sticky
+            // and background-painting support — forcing table-row-group
+            // (what tbody already uses, and what sticky-top thead relies on
+            // working correctly) fixes both the non-sticking on long tables
+            // and the missing background on short ones.
+            display: table-row-group;
             background-color: $color-caption-bg;
             color: $color-caption-text;
             td {

@@ -257,7 +257,7 @@ const Dashboard = (props) => {
                         moveRangeOnFirstSelection={false}
                         ranges={duration}
                         direction="horizontal"
-                        rangeColors={["#638663"]}
+                        rangeColors={["#6B3B42"]}
                     />
                 </div>
                 {shopwiseSales.length > 0 && (
@@ -381,7 +381,7 @@ const Dashboard = (props) => {
                                     wrapperStyle={{ paddingTop: "1rem" }}
                                     iconType="star"
                                 />
-                                <Bar dataKey="Quantity" fill="#638663" />
+                                <Bar dataKey="Quantity" fill="#6B3B42" />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>

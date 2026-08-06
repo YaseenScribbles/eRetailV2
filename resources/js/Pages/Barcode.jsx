@@ -8,18 +8,18 @@ import Scanner from "./components/Scanner";
 import { Menu, Check, ScanLine, ChevronDown, ChevronRight } from "lucide-react";
 
 const SELECT_ALL_VALUE = "__select_all__";
-const MAX_VISIBLE_CHIPS = 3;
 
 const CollapsedMultiValue = (props) => {
     const { index, getValue } = props;
     const total = getValue().length;
-    if (index < MAX_VISIBLE_CHIPS) {
+    const lastIndex = total - 1;
+    if (index === lastIndex) {
         return <components.MultiValue {...props} />;
     }
-    if (index === MAX_VISIBLE_CHIPS) {
+    if (index === 0) {
         return (
             <div className="select__overflow-badge">
-                +{total - MAX_VISIBLE_CHIPS} more
+                +{total - 1} more
             </div>
         );
     }
@@ -244,10 +244,10 @@ const Barcode = (props) => {
                             ...theme,
                             colors: {
                                 ...theme.colors,
-                                primary75: "color-mix(in srgb, #638663 70%, white)",
-                                primary50: "color-mix(in srgb, #638663 45%, white)",
-                                primary25: "color-mix(in srgb, #638663 20%, white)",
-                                primary: "#638663",
+                                primary75: "color-mix(in srgb, #6B3B42 70%, white)",
+                                primary50: "color-mix(in srgb, #6B3B42 45%, white)",
+                                primary25: "color-mix(in srgb, #6B3B42 20%, white)",
+                                primary: "#6B3B42",
                             },
                         })}
                     />
@@ -284,7 +284,7 @@ const Barcode = (props) => {
                             <thead>
                                 <tr>
                                     <th>Product</th>
-                                    <th>Purchase Qty</th>
+                                    <th>Delivered Qty</th>
                                     <th>Sales Qty</th>
                                     <th>Sales Amount</th>
                                     <th>Stock</th>
@@ -294,7 +294,7 @@ const Barcode = (props) => {
                                 {productSummary.map((e, i) => (
                                     <tr key={i}>
                                         <td>{e.Catalog}</td>
-                                        <td>{(+e.PurchaseQty).toFixed(2)}</td>
+                                        <td>{(+e.DeliveredQty).toFixed(2)}</td>
                                         <td>{(+e.SalesQty).toFixed(2)}</td>
                                         <td>{(+e.SalesAmount).toFixed(2)}</td>
                                         <td>{(+e.Stock).toFixed(2)}</td>
@@ -308,7 +308,7 @@ const Barcode = (props) => {
                                         {productSummary
                                             .reduce(
                                                 (acc, curr) =>
-                                                    acc + +curr.PurchaseQty,
+                                                    acc + +curr.DeliveredQty,
                                                 0
                                             )
                                             .toFixed(2)}

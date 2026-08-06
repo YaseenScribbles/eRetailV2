@@ -1,8 +1,8 @@
 @use "sass:color";
 
 .btn__icon {
-    height: 1.7rem;
-    width: 1.7rem;
+    height: 1.4rem;
+    width: 1.4rem;
     stroke: currentColor;
     flex-shrink: 0;
 }
@@ -15,9 +15,9 @@
     border: 1px solid transparent;
     outline: none;
     cursor: pointer;
-    padding: 1.5rem 3rem;
+    padding: 1rem 1.8rem;
     border-radius: $radius-sm;
-    font-size: 1.6rem;
+    font-size: 1.3rem;
     font-weight: 600;
     font-family: inherit;
     text-transform: uppercase;
@@ -338,7 +338,7 @@
 }
 
 .toast {
-    background-color: $color-primary;
+    background-color: $color-danger;
     color: $color-white;
     padding: 1rem 2rem;
     min-width: 25rem;
@@ -437,7 +437,7 @@
         align-items: center;
 
         .btn {
-            height: 5.2rem;
+            height: 4.4rem;
             width: auto;
             white-space: nowrap;
 
@@ -450,10 +450,10 @@
     .select {
         @include premium-select;
         font-family: inherit;
-        font-size: 1.7rem;
+        font-size: 1.4rem;
 
         > [class$="control"] {
-            min-height: 5.2rem;
+            min-height: 4.4rem;
             padding: 0.3rem 0.5rem;
         }
     }

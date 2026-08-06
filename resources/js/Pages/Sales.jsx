@@ -805,10 +805,10 @@ const Sales = (props) => {
                                 ...theme,
                                 colors: {
                                     ...theme.colors,
-                                    primary75: "color-mix(in srgb, #638663 70%, white)",
-                                    primary50: "color-mix(in srgb, #638663 45%, white)",
-                                    primary25: "color-mix(in srgb, #638663 20%, white)",
-                                    primary: "#638663",
+                                    primary75: "color-mix(in srgb, #6B3B42 70%, white)",
+                                    primary50: "color-mix(in srgb, #6B3B42 45%, white)",
+                                    primary25: "color-mix(in srgb, #6B3B42 20%, white)",
+                                    primary: "#6B3B42",
                                 },
                             })}
                         />
@@ -828,10 +828,10 @@ const Sales = (props) => {
                                 ...theme,
                                 colors: {
                                     ...theme.colors,
-                                    primary75: "color-mix(in srgb, #638663 70%, white)",
-                                    primary50: "color-mix(in srgb, #638663 45%, white)",
-                                    primary25: "color-mix(in srgb, #638663 20%, white)",
-                                    primary: "#638663",
+                                    primary75: "color-mix(in srgb, #6B3B42 70%, white)",
+                                    primary50: "color-mix(in srgb, #6B3B42 45%, white)",
+                                    primary25: "color-mix(in srgb, #6B3B42 20%, white)",
+                                    primary: "#6B3B42",
                                 },
                             })}
                         ></ReactSelect>
@@ -864,7 +864,7 @@ const Sales = (props) => {
                             moveRangeOnFirstSelection={false}
                             ranges={duration}
                             direction="horizontal"
-                            rangeColors={["#638663"]}
+                            rangeColors={["#6B3B42"]}
                         />
                     </div>
                     <div className="form__group">

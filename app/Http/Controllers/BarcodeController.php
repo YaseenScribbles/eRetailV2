@@ -195,16 +195,37 @@ class BarcodeController extends Controller
                 INNER JOIN FilteredProducts FP ON D.PluID = FP.PluId
                 WHERE M.DeliveryTo IN ($shop_ids)
                 GROUP BY D.PluID, M.DeliveryTo
+            ),
+            DeliveryData AS (
+                SELECT PluID, SUM(NetQty) DeliveredQty
+                FROM (
+                    SELECT DD.PluID, SUM(DD.Quantity) NetQty
+                    FROM DeliveryDetails DD
+                    INNER JOIN DeliveryMaster DM ON DM.Id = DD.Id
+                    INNER JOIN FilteredProducts FP ON DD.PluID = FP.PluId
+                    WHERE DM.DeliveryTo IN ($shop_ids)
+                    GROUP BY DD.PluID
+                    UNION ALL
+                    SELECT DD.PluID, -SUM(DD.Quantity) NetQty
+                    FROM DeliveryDetails DD
+                    INNER JOIN DeliveryMaster DM ON DM.Id = DD.Id
+                    INNER JOIN FilteredProducts FP ON DD.PluID = FP.PluId
+                    WHERE DM.DeliveryFrom IN ($shop_ids)
+                    GROUP BY DD.PluID
+                ) NetDeliveries
+                GROUP BY PluID
             )
-            SELECT P.PluID, P.CatalogId, P.Catalog, P.Qty [Purchase],
+            SELECT P.PluID, P.CatalogId, P.Catalog,
                    R.DeliveryTo [ShopID], SH.ShopName,
                    ISNULL(S.Qty,0) [SalesQty], ISNULL(S.Amount,0) [SalesAmount],
-                   ISNULL(ST.stock,0) Stock, R.Date [FirstDeliveredDate]
+                   ISNULL(ST.stock,0) Stock, R.Date [FirstDeliveredDate],
+                   ISNULL(DV.DeliveredQty,0) [DeliveredQty]
             FROM PurchaseData P
             INNER JOIN ReceivedData R ON R.PluID = P.PluID
             INNER JOIN Shops SH ON SH.ShopID = R.DeliveryTo
             LEFT JOIN SalesData S ON R.PluID = S.PluID AND R.DeliveryTo = S.ShopID
-            LEFT JOIN StockData ST ON R.PluID = ST.pluid AND ST.location_id = R.DeliveryTo";
+            LEFT JOIN StockData ST ON R.PluID = ST.pluid AND ST.location_id = R.DeliveryTo
+            LEFT JOIN DeliveryData DV ON DV.PluID = R.PluID";
 
             return $this->timedSelect('getProductSearchData', $sql);
         } catch (\Throwable $th) {
@@ -257,20 +278,20 @@ class BarcodeController extends Controller
         return array_values($grouped);
     }
 
-    // Aggregates the shared dataset per Catalog, across all shops. Purchase
-    // qty is repeated per shop a PluID was received at (one PurchaseData row
+    // Aggregates the shared dataset per Catalog, across all shops. Delivered
+    // qty is repeated per shop a PluID was received at (one DeliveryData row
     // fanned out by ReceivedData in V_ProductSearch), so it's summed once
     // per distinct PluID rather than once per row to avoid overcounting.
     public function buildProductSummary(array $rows)
     {
         $grouped = [];
-        $seenPurchasePlu = [];
+        $seenDeliveredPlu = [];
         foreach ($rows as $r) {
             if (!isset($grouped[$r->CatalogId])) {
                 $grouped[$r->CatalogId] = [
                     'CatalogId' => $r->CatalogId,
                     'Catalog' => $r->Catalog,
-                    'PurchaseQty' => 0,
+                    'DeliveredQty' => 0,
                     'SalesQty' => 0,
                     'SalesAmount' => 0,
                     'Stock' => 0,
@@ -280,9 +301,9 @@ class BarcodeController extends Controller
             $grouped[$r->CatalogId]['SalesAmount'] += $r->SalesAmount ?? 0;
             $grouped[$r->CatalogId]['Stock'] += $r->Stock ?? 0;
 
-            if (!isset($seenPurchasePlu[$r->PluID])) {
-                $seenPurchasePlu[$r->PluID] = true;
-                $grouped[$r->CatalogId]['PurchaseQty'] += $r->Purchase ?? 0;
+            if (!isset($seenDeliveredPlu[$r->PluID])) {
+                $seenDeliveredPlu[$r->PluID] = true;
+                $grouped[$r->CatalogId]['DeliveredQty'] += $r->DeliveredQty ?? 0;
             }
         }
 
